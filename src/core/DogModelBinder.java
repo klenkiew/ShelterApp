@@ -1,5 +1,7 @@
 package core;
 
+import entities.Dog;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,9 +16,9 @@ public class DogModelBinder implements ModelBinder<Dog>
     private final Map<String, String> columnsToFieldsMappings = new HashMap<>();
     {
         columnsToFieldsMappings.put("id", "id");
-        columnsToFieldsMappings.put("imie", "nazwa");
+        columnsToFieldsMappings.put("imie", "name");
         columnsToFieldsMappings.put("wiek", "age");
-        columnsToFieldsMappings.put("czyAgresywny", "isAggresive");
+        columnsToFieldsMappings.put("czyAgresywny", "isAggressive");
         columnsToFieldsMappings.put("czyOtwarty", "isOpen");
         columnsToFieldsMappings.put("czyChorowity", "isVulnerable");
         columnsToFieldsMappings.put("kolorSiersci", "hairColor");

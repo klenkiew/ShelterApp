@@ -50,10 +50,6 @@ public class MainController
         try
         {
             city = citiesRepository.getById((Integer) data.get(0));
-            city.setName(city.getName());
-            city.setDistrict(city.getDistrict());
-            city.setCountryCode(city.getCountryCode());
-            city.setPopulation(city.getPopulation());
             view.displayDialogFor(city);
         } catch (NoSuchFieldException | IllegalAccessException e1)
         {

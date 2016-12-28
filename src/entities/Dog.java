@@ -1,14 +1,17 @@
-package core;
+package entities;
 
 /**
  * Created by Kamil on 27.12.2016.
  */
+
+// TODO: foreign key fields
+
 public class Dog
 {
     private int id;
     private int name;
     private int age;
-    private boolean isAggresive;
+    private boolean isAggressive;
     private boolean isOpen;
     private boolean isVulnerable;
     private String hairColor;
@@ -44,14 +47,14 @@ public class Dog
         this.age = age;
     }
 
-    public boolean isAggresive()
+    public boolean isAggressive()
     {
-        return isAggresive;
+        return isAggressive;
     }
 
-    public void setAggresive(boolean aggresive)
+    public void setAggressive(boolean aggressive)
     {
-        isAggresive = aggresive;
+        isAggressive = aggressive;
     }
 
     public boolean isOpen()
