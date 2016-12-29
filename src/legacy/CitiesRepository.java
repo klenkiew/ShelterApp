@@ -1,4 +1,8 @@
-package core;
+package legacy;
+
+import core.Database;
+import core.ModelBinder;
+import core.ModelBinderBase;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,11 +21,11 @@ public class CitiesRepository
     {
         database = new Database();
         HashMap<String, String> columnsToFieldsMappings = new HashMap<>();
-        columnsToFieldsMappings.put("Population", "populacjaHaha");
+        columnsToFieldsMappings.put("Population", "Population");
         binder = new ModelBinderBase<>(columnsToFieldsMappings, () -> new City());
     }
 
-    public ArrayList<City> getAll() throws NoSuchFieldException, IllegalAccessException
+    public ArrayList<City> getAll() throws NoSuchFieldException, IllegalAccessException, SQLException
     {
         ArrayList<HashMap<String, Object>> result = database.query("select * from city", new ArrayList<>());
         ArrayList<City> cities = new ArrayList<>();
@@ -33,7 +37,7 @@ public class CitiesRepository
         return cities;
     }
 
-    public City getById(int id) throws NoSuchFieldException, IllegalAccessException
+    public City getById(int id) throws NoSuchFieldException, IllegalAccessException, SQLException
     {
         ArrayList<Object> parameters = new ArrayList<>();
         parameters.add(id);

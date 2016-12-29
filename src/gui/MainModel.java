@@ -1,9 +1,8 @@
 package gui;
 
-import core.CitiesRepository;
-import core.City;
+import core.DogsRepository;
+import entities.Dog;
 
-import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,12 +13,12 @@ import java.util.ArrayList;
 public class MainModel
 {
     private DefaultTableModel tableModel;
-    private CitiesRepository citiesRepository;
+    private DogsRepository dogsRepository;
 
-    public MainModel() throws SQLException, NoSuchFieldException, IllegalAccessException
+    public MainModel(DogsRepository dogsRepository)
     {
-        citiesRepository = new CitiesRepository();
-        String[] columnTitles = {"Id", "Name", "Population"};
+        this.dogsRepository = dogsRepository;
+        String[] columnTitles = {"Id", "Name", "Age", "Description"};
         int rowCount = 0;
         tableModel = new DefaultTableModel(columnTitles, rowCount)
         {
@@ -29,19 +28,22 @@ public class MainModel
                 return false;
             }
         };
-        for(City city : getData())
+    }
+
+    public void loadData() throws NoSuchFieldException, IllegalAccessException, SQLException
+    {
+        ArrayList<Dog> dogsArrayList = dogsRepository.getAll();
+        Dog[] dogs = dogsArrayList.toArray(new Dog[dogsArrayList.size()]);
+        for(Dog dog : dogs)
         {
-            Object[] rowData = new Object[] {city.getID(), city.getName(), city.getPopulation()};
+            Object[] rowData = new Object[] {dog.getId(), dog.getName(), dog.getAge(), dog.getDescription()};
             tableModel.addRow(rowData);
         }
     }
 
-    public City[] getData() throws NoSuchFieldException, IllegalAccessException
+    public Dog getDogById(int id) throws NoSuchFieldException, IllegalAccessException, SQLException
     {
-        ArrayList<City> cities = new ArrayList<>();
-        cities = citiesRepository.getAll();
-        City[] data = new City[cities.size()];
-        return cities.toArray(data);
+        return dogsRepository.getById(id);
     }
 
     public DefaultTableModel getTableModel()

@@ -1,4 +1,4 @@
-package core;
+package legacy;
 
 /**
  * Created by Kamil on 27.12.2016.
@@ -10,7 +10,7 @@ public class City
     private String Name;
     private String CountryCode;
     private String District;
-    private int populacjaHaha;
+    private int Population;
 
     public int getID()
     {
@@ -54,11 +54,11 @@ public class City
 
     public int getPopulation()
     {
-        return populacjaHaha;
+        return Population;
     }
 
     public void setPopulation(int population)
     {
-        populacjaHaha = population;
+        Population = population;
     }
 }

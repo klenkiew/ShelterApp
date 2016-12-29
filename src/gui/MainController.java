@@ -1,10 +1,12 @@
 package gui;
 
-import core.CitiesRepository;
-import core.City;
+import core.*;
+import entities.Dog;
 
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Vector;
 
 /**
@@ -14,49 +16,80 @@ public class MainController
 {
     private MainView view;
     private MainModel model;
-    private CitiesRepository citiesRepository;
+    private Database database;
 
-    public static MainController getControllerInstance() throws SQLException, NoSuchFieldException, IllegalAccessException
+    public static MainController getControllerInstance()
     {
-        MainModel model = new MainModel();
+        Database database = new Database();
+        ModelBinder<Dog> binder = new DogModelBinder();
+        DogsRepository dogsRepository = new DogsRepository(database, binder);
+        MainModel model = new MainModel(dogsRepository);
         MainView view = new MainView(model);
-        MainController controller = new MainController(view, model);
+        MainController controller = new MainController(view, model, database);
         view.setMainController(controller);
         return controller;
     }
 
-    public MainController(MainView view, MainModel model)
+    public MainController(MainView view, MainModel model, Database database)
     {
         this.view = view;
         this.model = model;
-        try
-        {
-            citiesRepository = new CitiesRepository();
-        } catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
+        this.database = database;
     }
 
     public void run()
     {
         view.setVisible(true);
-    }
-
-    public void onButtonClicked(ActionEvent e, int selectedRow)
-    {
-        Vector data = (Vector) model.getTableModel().getDataVector().get(selectedRow);
-        City city = null;
         try
         {
-            city = citiesRepository.getById((Integer) data.get(0));
-            view.displayDialogFor(city);
-        } catch (NoSuchFieldException | IllegalAccessException e1)
+            DatabaseConnectionProperties properties = new ConfigurationManager().readDatabaseConnectionProperties();
+            database.connect(properties);
+            model.loadData();
+        } catch (NoSuchFieldException | IllegalAccessException e)
+        {
+            String errorMessage = "Model binding error occurred.";
+            view.displayError(errorMessage);
+            e.printStackTrace();
+        } catch (SQLException e)
+        {
+            String errorMessage = "Unable to get data from database.";
+            view.displayError(errorMessage);
+            e.printStackTrace();
+        } catch (IOException e)
+        {
+            String errorMessage = "Couldn't read database configuration file.";
+            view.displayError(errorMessage);
+            e.printStackTrace();
+        } catch (ParseException e)
+        {
+            String errorMessage = "Database configuration file parsing error.";
+            view.displayError(errorMessage);
+            e.printStackTrace();
+        }
+    }
+
+    public void onDetailsButtonClicked()
+    {
+        int selectedRow = view.getSelectedRow();
+        // no row selected
+        if (selectedRow == -1)
+            return;
+        Vector data = (Vector) model.getTableModel().getDataVector().get(selectedRow);
+        try
+        {
+            Dog dog = model.getDogById((Integer) data.get(0));
+            view.displayDialogFor(dog);
+        }
+        catch (NoSuchFieldException | IllegalAccessException e1)
         {
             String errorMessage = "Model binding error occurred.";
             view.displayError(errorMessage);
             e1.printStackTrace();
+        } catch (SQLException e1)
+        {
+            String errorMessage = "Database error occurred.";
+            view.displayError(errorMessage);
+            e1.printStackTrace();
         }
-
     }
 }

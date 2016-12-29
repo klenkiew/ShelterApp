@@ -31,7 +31,13 @@ public class ModelBinderBase<ModelType> implements ModelBinder<ModelType>
             String fieldName = mapping == null ? columnName : mapping;
             Field field = model.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);
-            field.set(model, column.getValue());
+            if (field.getType() == boolean.class)
+            {
+                boolean value = column.getValue() == "0" ? false : true;
+                field.set(model, value);
+            }
+            else
+                field.set(model, column.getValue());
         }
         return model;
     }

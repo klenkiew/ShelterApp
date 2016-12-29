@@ -9,13 +9,15 @@ package entities;
 public class Dog
 {
     private int id;
-    private int name;
+    private String name;
     private int age;
     private boolean isAggressive;
     private boolean isOpen;
     private boolean isVulnerable;
     private String hairColor;
     private String description;
+    private int breedId;
+    private int coopId;
 
     public int getId()
     {
@@ -27,12 +29,12 @@ public class Dog
         this.id = id;
     }
 
-    public int getName()
+    public String getName()
     {
         return name;
     }
 
-    public void setName(int name)
+    public void setName(String name)
     {
         this.name = name;
     }

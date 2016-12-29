@@ -1,6 +1,5 @@
 package core;
 
-import javax.xml.transform.Result;
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.*;
@@ -11,28 +10,28 @@ import java.util.*;
 public class Database implements AutoCloseable
 {
     private Connection connection;
-    private final String username = "kamil";
-    private final String password = "1234";
-    private final String serverName = "localhost";
-    private final String databaseName = "world";
 
-    public Database() throws SQLException
+    public Database()
+    {
+    }
+
+    public void connect(DatabaseConnectionProperties properties) throws SQLException
     {
         StringBuilder builder = new StringBuilder("jdbc:mysql://");
-        builder.append(serverName);
+        builder.append(properties.getServerName());
         builder.append("/");
-        builder.append(databaseName);
+        builder.append(properties.getDatabaseName());
         String connectionString = builder.toString();
         Properties connectionProperties = new Properties();
-        connectionProperties.setProperty("user", username);
-        connectionProperties.setProperty("password", password);
-        connectionProperties.setProperty("useSSL", "true");
-        connectionProperties.setProperty("verifyServerCertificate", "false");
-        connectionProperties.setProperty("autoReconnect", "true");
+        connectionProperties.setProperty("user", properties.getUserName());
+        connectionProperties.setProperty("password", String.valueOf(properties.getPassword()));
+        connectionProperties.setProperty("useSSL", String.valueOf(properties.isUsingSSL()));
+        connectionProperties.setProperty("verifyServerCertificate", String.valueOf(properties.shouldVerifyServerCertificate()));
+        connectionProperties.setProperty("autoReconnect", String.valueOf(properties.shouldAutoReconnect()));
         connection = DriverManager.getConnection(connectionString, connectionProperties);
     }
 
-    public ArrayList<HashMap<String, Object>> query(String query, List<Object> parameters)
+    public ArrayList<HashMap<String, Object>> query(String query, List<Object> parameters) throws SQLException
     {
         ResultSet resultSet = null;
         ArrayList<HashMap<String, Object>> result = null;
@@ -46,46 +45,36 @@ public class Database implements AutoCloseable
             resultSet = preparedStatement.executeQuery();
             result = mapResultSet(resultSet);
         }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
         return result;
     }
 
-    private ArrayList<HashMap<String, Object>> mapResultSet(ResultSet resultSet)
+    private ArrayList<HashMap<String, Object>> mapResultSet(ResultSet resultSet) throws SQLException
     {
         ArrayList<HashMap<String, Object>> result = new ArrayList<>();
-        try
+        ResultSetMetaData metaData = resultSet.getMetaData();
+        int numberOfColumns = metaData.getColumnCount();
+        while (resultSet.next())
         {
-            ResultSetMetaData metaData = resultSet.getMetaData();
-            int numberOfColumns = metaData.getColumnCount();
-            while (resultSet.next())
+            HashMap<String, Object> row = new HashMap<>();
+            for (int i = 1; i <= numberOfColumns; ++i)
             {
-                HashMap<String, Object> row = new HashMap<>();
-                for (int i = 1; i <= numberOfColumns; ++i)
-                {
-                    String columnName = metaData.getColumnName(i);
-                    Object value = resultSet.getObject(i);
-                    row.put(columnName, value);
-                }
-                result.add(row);
+                String columnName = metaData.getColumnName(i);
+                Object value = resultSet.getObject(i);
+                row.put(columnName, value);
             }
-        } catch (SQLException e)
-        {
-            e.printStackTrace();
+            result.add(row);
         }
         return result;
     }
 
-    public int update(String query, List<Object> parameters)
+    public int update(String query, List<Object> parameters) throws SQLException
     {
         int numberOfRowsUpdated = 0;
         boolean isAutoCommit = false;
         try ( PreparedStatement preparedStatement = connection.prepareStatement(query) )
         {
             isAutoCommit = connection.getAutoCommit();
-            connection.setAutoCommit(true);
+            connection.setAutoCommit(false);
             int i = 0;
             for (Object parameter : parameters)
             {
@@ -96,33 +85,36 @@ public class Database implements AutoCloseable
         }
         catch (SQLException e)
         {
-            try
-            {
-                connection.rollback();
-            } catch (SQLException e1)
-            {
-                e1.printStackTrace();
-            }
-            e.printStackTrace();
+            rollback();
+            throw e;
         }
         finally
         {
-            try
-            {
-                connection.setAutoCommit(isAutoCommit);
-            } catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            setAutoCommit(isAutoCommit);
         }
         return numberOfRowsUpdated;
     }
 
-    @Override
-    protected void finalize() throws Throwable
+    private void setAutoCommit(boolean value)
     {
-        super.finalize();
-        close();
+        try
+        {
+            connection.setAutoCommit(value);
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private void rollback()
+    {
+        try
+        {
+            connection.rollback();
+        } catch (SQLException e1)
+        {
+            e1.printStackTrace();
+        }
     }
 
     @Override
@@ -141,6 +133,13 @@ public class Database implements AutoCloseable
         }
     }
 
+    @Override
+    protected void finalize() throws Throwable
+    {
+        super.finalize();
+        close();
+    }
+
     static
     {
         try
@@ -150,50 +149,5 @@ public class Database implements AutoCloseable
         {
             e.printStackTrace();
         }
-    }
-
-    public void test() throws SQLException
-    {
-        Statement statement = connection.createStatement();
-        String query = "select * from city";
-        ResultSet resultSet = statement.executeQuery(query);
-        ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
-        StringBuilder stringBuilder = new StringBuilder();
-
-        while (resultSet.next()) {
-            for(int i = 1; i <= resultSetMetaData.getColumnCount(); ++i) {
-                stringBuilder.append(resultSetMetaData.getColumnName(i)+ ": ");
-//                System.out.println(">" + Integer.toString(resultSetMetaData.getColumnType(i)));
-
-                if (resultSetMetaData.getColumnType(i)==Types.NVARCHAR || resultSetMetaData.getColumnType(i)==Types.VARCHAR)
-                    stringBuilder.append(resultSet.getNString(i));
-                if (resultSetMetaData.getColumnType(i)==Types.NUMERIC || resultSetMetaData.getColumnType(i)==Types.INTEGER)
-                    stringBuilder.append(Integer.toString(resultSet.getInt(i)));
-                if (resultSetMetaData.getColumnType(i)==Types.FLOAT)
-                    stringBuilder.append(resultSet.getFloat(i));
-                if (resultSetMetaData.getColumnType(i)==Types.CHAR)
-                    stringBuilder.append(resultSet.getString(i));
-                if (resultSetMetaData.getColumnType(i)==Types.TIMESTAMP) {
-                    java.util.Date date =  resultSet.getDate(i);
-                    if (resultSet.wasNull())
-                        stringBuilder.append("NULL");
-                    else
-                        stringBuilder.append(date.toString());
-                }
-                stringBuilder.append("\n");
-            }
-            stringBuilder.append("\n");
-        }
-        System.out.println(stringBuilder.toString());
-    }
-
-    public void testSqlTypes() throws IllegalAccessException
-    {
-        Map<Integer, String> result = new HashMap<Integer, String>();
-
-        for (Field field : Types.class.getFields()) {
-            result.put((Integer)field.get(null), field.getName());
-        }
-        System.out.println("Data type: " + result.get(4));
     }
 }

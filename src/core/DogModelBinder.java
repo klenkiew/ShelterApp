@@ -15,7 +15,7 @@ public class DogModelBinder implements ModelBinder<Dog>
     // column name, field name
     private final Map<String, String> columnsToFieldsMappings = new HashMap<>();
     {
-        columnsToFieldsMappings.put("id", "id");
+        columnsToFieldsMappings.put("Id", "id");
         columnsToFieldsMappings.put("imie", "name");
         columnsToFieldsMappings.put("wiek", "age");
         columnsToFieldsMappings.put("czyAgresywny", "isAggressive");
@@ -23,6 +23,8 @@ public class DogModelBinder implements ModelBinder<Dog>
         columnsToFieldsMappings.put("czyChorowity", "isVulnerable");
         columnsToFieldsMappings.put("kolorSiersci", "hairColor");
         columnsToFieldsMappings.put("opis", "description");
+        columnsToFieldsMappings.put("Rasa_Id", "breedId");
+        columnsToFieldsMappings.put("Kojec_Id", "coopId");
     }
 
     public DogModelBinder()
