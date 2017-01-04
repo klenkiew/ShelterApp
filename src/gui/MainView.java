@@ -12,7 +12,8 @@ import java.awt.*;
 public class MainView
 {
     private final String title = "Shelter";
-    private JButton button;
+    private JButton detailsButton;
+    private JButton addVaccinationButton;
 
     private JFrame mainFrame;
     private MainController mainController;
@@ -41,18 +42,22 @@ public class MainView
         table = new JTable(tableModel);
         scrollPane = new JScrollPane(table);
         mainFrame.add(scrollPane, BorderLayout.CENTER);
-        button = new JButton("Details");
+        detailsButton = new JButton("Details");
+        addVaccinationButton = new JButton("Add vaccination");
         // prevents stretching in y axis
-        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, button.getPreferredSize().height));
+        detailsButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, detailsButton.getPreferredSize().height));
+        addVaccinationButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, addVaccinationButton.getPreferredSize().height));
         leftMenu = new JPanel();
         leftMenu.setLayout(new BoxLayout(leftMenu, BoxLayout.Y_AXIS));
-        leftMenu.add(button);
+        leftMenu.add(detailsButton);
+        leftMenu.add(addVaccinationButton);
         mainFrame.add(leftMenu, BorderLayout.WEST);
     }
 
     private void setUpActionListeners()
     {
-        button.addActionListener(e -> mainController.onDetailsButtonClicked());
+        detailsButton.addActionListener(e -> mainController.onDetailsButtonClicked());
+        addVaccinationButton.addActionListener(e -> mainController.onAddVaccinationClicked());
     }
 
     public void setVisible(boolean value)
@@ -81,4 +86,10 @@ public class MainView
     {
         return table.getSelectedRow();
     }
+
+    public int[] getSelectedRows()
+    {
+        return table.getSelectedRows();
+    }
+
 }

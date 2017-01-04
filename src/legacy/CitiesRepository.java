@@ -1,8 +1,8 @@
 package legacy;
 
 import core.Database;
-import core.ModelBinder;
-import core.ModelBinderBase;
+import core.binders.ModelBinder;
+import core.binders.ModelBinderBase;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

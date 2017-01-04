@@ -1,6 +1,6 @@
 package gui;
 
-import core.DogsRepository;
+import core.repositories.DogsRepository;
 import entities.Dog;
 
 import javax.swing.table.DefaultTableModel;

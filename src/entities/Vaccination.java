@@ -9,6 +9,8 @@ public class Vaccination
 {
     private int id;
     private Date vaccinationDate;
+    private int dogId;
+    private int vaccineId;
 
     public int getId()
     {
@@ -28,5 +30,25 @@ public class Vaccination
     public void setVaccinationDate(Date vaccinationDate)
     {
         this.vaccinationDate = vaccinationDate;
+    }
+
+    public int getDogId()
+    {
+        return dogId;
+    }
+
+    public void setDogId(int dogId)
+    {
+        this.dogId = dogId;
+    }
+
+    public int getVaccineId()
+    {
+        return vaccineId;
+    }
+
+    public void setVaccineId(int vaccineId)
+    {
+        this.vaccineId = vaccineId;
     }
 }

@@ -1,4 +1,6 @@
-package core;
+package core.binders;
+
+import core.Factory;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;

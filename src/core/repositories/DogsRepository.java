@@ -1,5 +1,7 @@
-package core;
+package core.repositories;
 
+import core.binders.ModelBinder;
+import core.Database;
 import entities.Dog;
 
 import java.sql.SQLException;

@@ -1,12 +1,23 @@
 package gui;
 
 import core.*;
+import core.binders.DogModelBinder;
+import core.binders.ModelBinder;
+import core.binders.VaccinationModelBinder;
+import core.binders.VaccineModelBinder;
+import core.repositories.DogsRepository;
+import core.repositories.VaccinationRepository;
+import core.repositories.VaccineRepository;
 import entities.Dog;
+import entities.Vaccination;
+import entities.Vaccine;
 
-import java.awt.event.ActionEvent;
+import javax.swing.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.Date;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -90,6 +101,36 @@ public class MainController
             String errorMessage = "Database error occurred.";
             view.displayError(errorMessage);
             e1.printStackTrace();
+        }
+    }
+
+    public void onAddVaccinationClicked()
+    {
+        int[] rows = view.getSelectedRows();
+        try
+        {
+            List<Vaccine> vaccines = new VaccineRepository(database, new VaccineModelBinder()).getAll();
+            AddVaccinationDialog addVaccinationDialog = new AddVaccinationDialog(vaccines.toArray(new Vaccine[vaccines.size()]));
+            int result = addVaccinationDialog.display();
+            if (result == JOptionPane.CANCEL_OPTION)
+                return;
+            Vaccine vaccine = addVaccinationDialog.getSelectedVaccine();
+            Date date = addVaccinationDialog.getDate();
+            Vaccination vaccination = new Vaccination();
+            vaccination.setVaccinationDate(date);
+            vaccination.setVaccineId(vaccine.getId());
+            VaccinationRepository vaccinationRepository = new VaccinationRepository(database, new VaccinationModelBinder());
+            for (int row : rows)
+            {
+                vaccination.setId((int)(Math.random()*1e10)); // TODO: comment when auto-increment enabled in database
+                vaccination.setDogId(row + 1); // for now dog's id = row + 1, TODO: change to get actual dog id
+                vaccinationRepository.add(vaccination);
+            }
+        } catch (NoSuchFieldException | IllegalAccessException | SQLException e)
+        {
+            String errorMessage = "Database error occurred.";
+            view.displayError(errorMessage);
+            e.printStackTrace();
         }
     }
 }

@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 /**
  * Created by Kamil on 29.12.2016.

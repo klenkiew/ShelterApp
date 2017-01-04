@@ -1,6 +1,5 @@
-package core;
+package core.binders;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**

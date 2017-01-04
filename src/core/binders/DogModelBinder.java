@@ -1,4 +1,4 @@
-package core;
+package core.binders;
 
 import entities.Dog;
 

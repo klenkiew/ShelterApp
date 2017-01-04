@@ -75,7 +75,7 @@ public class Database implements AutoCloseable
         {
             isAutoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
-            int i = 0;
+            int i = 1;
             for (Object parameter : parameters)
             {
                 preparedStatement.setObject(i++, parameter);

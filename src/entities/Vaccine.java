@@ -8,6 +8,7 @@ public class Vaccine
     private int id;
     private int howManyTimesPerMonth;
     private boolean isObligatory;
+    private int diseaseId;
 
     public int getId()
     {
@@ -37,5 +38,15 @@ public class Vaccine
     public void setObligatory(boolean obligatory)
     {
         isObligatory = obligatory;
+    }
+
+    public int getDiseaseId()
+    {
+        return diseaseId;
+    }
+
+    public void setDiseaseId(int diseaseId)
+    {
+        this.diseaseId = diseaseId;
     }
 }
