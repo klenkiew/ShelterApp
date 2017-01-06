@@ -16,15 +16,15 @@ public class DogModelBinder implements ModelBinder<Dog>
     private final Map<String, String> columnsToFieldsMappings = new HashMap<>();
     {
         columnsToFieldsMappings.put("Id", "id");
-        columnsToFieldsMappings.put("imie", "name");
-        columnsToFieldsMappings.put("wiek", "age");
-        columnsToFieldsMappings.put("czyAgresywny", "isAggressive");
-        columnsToFieldsMappings.put("czyOtwarty", "isOpen");
-        columnsToFieldsMappings.put("czyChorowity", "isVulnerable");
-        columnsToFieldsMappings.put("kolorSiersci", "hairColor");
-        columnsToFieldsMappings.put("opis", "description");
-        columnsToFieldsMappings.put("Rasa_Id", "breedId");
-        columnsToFieldsMappings.put("Kojec_Id", "coopId");
+        columnsToFieldsMappings.put("Imie", "name");
+        columnsToFieldsMappings.put("Wiek", "age");
+        columnsToFieldsMappings.put("CzyAgresywny", "isAggressive");
+        columnsToFieldsMappings.put("CzyOtwarty", "isOpen");
+        columnsToFieldsMappings.put("CzyChorowity", "isVulnerable");
+        columnsToFieldsMappings.put("KolorSiersci", "hairColor");
+        columnsToFieldsMappings.put("Opis", "description");
+        columnsToFieldsMappings.put("RasaId", "breedId");
+        columnsToFieldsMappings.put("KojecId", "coopId");
     }
 
     public DogModelBinder()

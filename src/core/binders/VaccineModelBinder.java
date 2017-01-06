@@ -16,9 +16,9 @@ public class VaccineModelBinder implements ModelBinder<Vaccine>
     private final Map<String, String> columnsToFieldsMappings = new HashMap<>();
     {
         columnsToFieldsMappings.put("Id", "id");
-        columnsToFieldsMappings.put("coIleMiesiecy", "howManyTimesPerMonth");
-        columnsToFieldsMappings.put("czyObowiazkowa", "isObligatory");
-        columnsToFieldsMappings.put("Choroba_Id", "diseaseId");
+        columnsToFieldsMappings.put("CoIleMiesiecy", "howManyTimesPerMonth");
+        columnsToFieldsMappings.put("CzyObowiazkowa", "isObligatory");
+        columnsToFieldsMappings.put("ChorobaId", "diseaseId");
     }
 
     public VaccineModelBinder()
