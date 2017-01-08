@@ -11,8 +11,8 @@ import java.util.HashMap;
  * Created by mkk-13 on 08/01/2017.
  */
 public class ModelRepository<ModelType> {
-    private Database database;
-    private ModelBinder<ModelType> binder;
+    protected Database database;
+    protected ModelBinder<ModelType> binder;
 
     public ModelRepository(Database database, ModelBinder<ModelType> binder) {
         this.database = database;

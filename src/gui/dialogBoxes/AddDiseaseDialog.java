@@ -1,6 +1,6 @@
-package gui;
+package gui.dialogBoxes;
 
-import entities.Vaccine;
+import entities.Disease;
 
 import javax.swing.*;
 import javax.swing.text.DateFormatter;
@@ -11,21 +11,21 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by Kamil on 04.01.2017.
+ * Created by Kamil on 08.01.2017.
  */
-public class AddVaccinationDialog
+public class AddDiseaseDialog
 {
-
     private JFormattedTextField textField;
     private JComboBox comboBox;
     private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private JCheckBox checkBox;
 
     private JButton okButton;
     private JButton cancelButton;
 
     private JComponent[] components;
 
-    public AddVaccinationDialog(Vaccine[] items)
+    public AddDiseaseDialog(Disease[] items)
     {
         textField = new JFormattedTextField(new DateFormatter(dateFormat));
         textField.setValue(new Date());
@@ -35,9 +35,9 @@ public class AddVaccinationDialog
             @Override
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if(value instanceof Vaccine){
-                    Vaccine vaccine = (Vaccine)value;
-                    setText(String.valueOf(vaccine.getId()));
+                if(value instanceof Disease){
+                    Disease disease = (Disease)value;
+                    setText(String.valueOf(disease.getName()));
                 }
                 return this;
             }
@@ -47,22 +47,28 @@ public class AddVaccinationDialog
         cancelButton=  new JButton("Cancel");
         buttonsPanel.add(okButton);
         buttonsPanel.add(cancelButton);
-        components = new JComponent[] {new JLabel("Choose vaccine:"), comboBox, new JLabel("Vaccination date:"), textField};
+        checkBox = new JCheckBox("Was fatal: ");
+        components = new JComponent[] {new JLabel("Choose disease:"), comboBox, checkBox, new JLabel("Infection date:"), textField};
     }
 
     public int display()
     {
-        return JOptionPane.showOptionDialog(null, components, "Add vaccination", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+        return JOptionPane.showOptionDialog(null, components, "Add disease", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 //        dialog.setVisible(true);
     }
 
-    public Vaccine getSelectedVaccine()
+    public Disease getSelectedDisease()
     {
-        return (Vaccine) comboBox.getSelectedItem();
+        return (Disease) comboBox.getSelectedItem();
     }
 
     public Date getDate() throws ParseException
     {
         return dateFormat.parse(textField.getText());
+    }
+
+    public boolean wasFatal()
+    {
+        return checkBox.isSelected();
     }
 }

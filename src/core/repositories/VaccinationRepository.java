@@ -2,6 +2,7 @@ package core.repositories;
 
 import core.binders.ModelBinder;
 import core.Database;
+import entities.DiseaseHistoryRecord;
 import entities.Vaccination;
 
 import java.sql.SQLException;

@@ -1,17 +1,12 @@
 package gui;
 
 import core.*;
-import core.binders.DogModelBinder;
-import core.binders.ModelBinder;
-import core.binders.VaccinationModelBinder;
-import core.binders.VaccineModelBinder;
-import core.repositories.DogsRepository;
-import core.repositories.ModelRepository;
-import core.repositories.VaccinationRepository;
-import core.repositories.VaccineRepository;
-import entities.Dog;
-import entities.Vaccination;
-import entities.Vaccine;
+import core.binders.*;
+import core.repositories.*;
+import entities.*;
+import gui.dialogBoxes.AddDiseaseDialog;
+import gui.dialogBoxes.AddDogDialog;
+import gui.dialogBoxes.AddVaccinationDialog;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
@@ -21,7 +16,6 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by Kamil on 27.12.2016.
@@ -80,6 +74,13 @@ public class MainController
         }
     }
 
+    public void addDogClicked()
+    {
+        // TODO: implement method
+        new AddDogDialog(new Breed[0], new Coop[0]).display();
+        return;
+    }
+
     public class onMouseDoubleClick extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -131,6 +132,40 @@ public class MainController
             {
                 vaccination.setDogId(Integer.parseInt(view.getCellValue(row, 0).toString()));
                 vaccinationRepository.add(vaccination);
+            }
+        } catch (NoSuchFieldException | IllegalAccessException | SQLException | ParseException e)
+        {
+            String errorMessage = "Database error occurred.";
+            view.displayError(errorMessage);
+            e.printStackTrace();
+        }
+    }
+
+    public void addDiseaseClicked()
+    {
+        int[] rows = view.getSelectedRows();
+        if (rows.length == 0)
+            return;
+
+        try
+        {
+            List<Disease> diseases = new DiseaseRepository(database, new DiseaseModelBinder()).getAll();
+            AddDiseaseDialog addDiseaseDialog = new AddDiseaseDialog(diseases.toArray(new Disease[diseases.size()]));
+            int result = addDiseaseDialog.display();
+            if (result == JOptionPane.CANCEL_OPTION)
+                return;
+            Disease disease = addDiseaseDialog.getSelectedDisease();
+            Date date = addDiseaseDialog.getDate();
+            boolean wasFatal = addDiseaseDialog.wasFatal();
+            DiseaseHistoryRecord diseaseHistoryRecord = new DiseaseHistoryRecord();
+            diseaseHistoryRecord.setDiseaseBeginningDate(date);
+            diseaseHistoryRecord.setDiseaseId(disease.getId());
+            diseaseHistoryRecord.setFatal(wasFatal);
+            DiseaseHistoryRepository diseaseHistoryRepository = new DiseaseHistoryRepository(database, new DiseaseHistoryModelBinder());
+            for (int row : rows)
+            {
+                diseaseHistoryRecord.setDogId(Integer.parseInt(view.getCellValue(row, 0).toString()));
+                diseaseHistoryRepository.add(diseaseHistoryRecord);
             }
         } catch (NoSuchFieldException | IllegalAccessException | SQLException | ParseException e)
         {

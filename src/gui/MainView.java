@@ -27,6 +27,7 @@ public class MainView
     private JPanel leftMenu;
     private JButton addVaccinationButton;
     private JButton addDogButton;
+    private JButton addDiseaseButton;
 
     public MainView(MainController controller, MainModel mainModel)
     {
@@ -91,11 +92,16 @@ public class MainView
         addVaccinationButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, addVaccinationButton.getPreferredSize().height));
         leftMenu.add(addVaccinationButton);
 
+        // SUB(Left) AddDisease button
+        addDiseaseButton = new JButton("Add disease");
+        addDiseaseButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, addDiseaseButton.getPreferredSize().height));
+        leftMenu.add((addDiseaseButton));
+
         // SUB(Left) AddDog button
         addDogButton = new JButton("Add dog");
-        addVaccinationButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, addVaccinationButton.getPreferredSize().height));
-        leftMenu.add(addVaccinationButton);
-        addDogButton.setEnabled(false); ///< TODO: rm after implementation
+        addDogButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, addDogButton.getPreferredSize().height));
+        leftMenu.add(addDogButton);
+//        addDogButton.setEnabled(false); ///< TODO: rm after implementation
 
         // Add parent panels to main tab container
         mainPanel.add(leftMenu, BorderLayout.WEST);
@@ -111,13 +117,14 @@ public class MainView
     {
         table.addMouseListener(mainController.new onMouseDoubleClick());
         addVaccinationButton.addActionListener(e -> mainController.onAddVaccinationClicked());
-
+        addDiseaseButton.addActionListener(e -> mainController.addDiseaseClicked());
+        addDogButton.addActionListener(e -> mainController.addDogClicked());
     }
 
     private void filterCells() {
         RowFilter<TableModel, Object> rf = null;
         try {
-            rf = RowFilter.regexFilter(filterText.getText(), IntStream.rangeClosed(0, table.getColumnCount()-1).toArray());
+            rf = RowFilter.regexFilter('^' + filterText.getText(), IntStream.rangeClosed(0, table.getColumnCount()-1).toArray());
         } catch (PatternSyntaxException e) {
             return;
         }

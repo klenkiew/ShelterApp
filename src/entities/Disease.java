@@ -10,6 +10,8 @@ public class Disease
     private String lethality;
     private String symptoms;
     private String description;
+    private int caseCount;
+    private int deathCount;
 
     public int getId()
     {
@@ -59,5 +61,25 @@ public class Disease
     public void setDescription(String description)
     {
         this.description = description;
+    }
+
+    public int getCaseCount()
+    {
+        return caseCount;
+    }
+
+    public void setCaseCount(int caseCount)
+    {
+        this.caseCount = caseCount;
+    }
+
+    public int getDeathCount()
+    {
+        return deathCount;
+    }
+
+    public void setDeathCount(int deathCount)
+    {
+        this.deathCount = deathCount;
     }
 }

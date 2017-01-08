@@ -10,6 +10,8 @@ public class DiseaseHistoryRecord
     private Date diseaseBeginningDate;
     private Date diseaseEndDate;
     private boolean isFatal;
+    private int dogId;
+    private int diseaseId;
 
     public Date getDiseaseBeginningDate()
     {
@@ -39,5 +41,25 @@ public class DiseaseHistoryRecord
     public void setFatal(boolean fatal)
     {
         isFatal = fatal;
+    }
+
+    public int getDogId()
+    {
+        return dogId;
+    }
+
+    public void setDogId(int dogId)
+    {
+        this.dogId = dogId;
+    }
+
+    public int getDiseaseId()
+    {
+        return diseaseId;
+    }
+
+    public void setDiseaseId(int diseaseId)
+    {
+        this.diseaseId = diseaseId;
     }
 }
