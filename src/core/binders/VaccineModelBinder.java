@@ -18,7 +18,7 @@ public class VaccineModelBinder implements ModelBinder<Vaccine>
     private final Map<String, String> columnsToFieldsMappings = new HashMap<>();
     {
         columnsToFieldsMappings.put("Id", "id");
-        columnsToFieldsMappings.put("CoIleMiesiecy", "howManyTimesPerMonth");
+        columnsToFieldsMappings.put("CoIleMiesiecy", "howManyMonthsPerDose");
         columnsToFieldsMappings.put("CzyObowiazkowa", "isObligatory");
         columnsToFieldsMappings.put("ChorobaId", "diseaseId");
     }
@@ -38,7 +38,7 @@ public class VaccineModelBinder implements ModelBinder<Vaccine>
     public List<Object> getAllParameters(Vaccine model) {
         List<Object> parameters = new ArrayList<>();
         parameters.add(null);  // id - auto-increment in database
-        parameters.add(model.getHowManyTimesPerMonth());
+        parameters.add(model.getHowManyMonthsPerDose());
         parameters.add(model.isObligatory());
         parameters.add(model.getDiseaseId());
 

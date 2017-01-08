@@ -6,7 +6,7 @@ package entities;
 public class Vaccine
 {
     private int id;
-    private int howManyTimesPerMonth;
+    private int howManyMonthsPerDose;
     private boolean isObligatory;
     private int diseaseId;
 
@@ -20,14 +20,14 @@ public class Vaccine
         this.id = id;
     }
 
-    public int getHowManyTimesPerMonth()
+    public int getHowManyMonthsPerDose()
     {
-        return howManyTimesPerMonth;
+        return howManyMonthsPerDose;
     }
 
-    public void setHowManyTimesPerMonth(int howManyTimesPerMonth)
+    public void setHowManyMonthsPerDose(int howManyMonthsPerDose)
     {
-        this.howManyTimesPerMonth = howManyTimesPerMonth;
+        this.howManyMonthsPerDose = howManyMonthsPerDose;
     }
 
     public boolean isObligatory()

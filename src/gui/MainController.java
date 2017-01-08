@@ -9,6 +9,8 @@ import gui.dialogBoxes.AddDogDialog;
 import gui.dialogBoxes.AddVaccinationDialog;
 import gui.tabPanels.DiseaseHistoryRecordController;
 import gui.tabPanels.DogController;
+import gui.tabPanels.VaccinationController;
+import gui.tabPanels.VaccineController;
 import javafx.util.Pair;
 
 import javax.swing.*;
@@ -56,6 +58,14 @@ public class MainController
         // Disease history tab
         Pair<String, Component> recordTab = new Pair<>("DiseasesHistory", new DiseaseHistoryRecordController(database).getView().getMainPanel());
         tabList.add(recordTab);
+
+        // Vaccination tab
+        Pair<String, Component> vaccinationTab = new Pair<>("Vaccinations", new VaccinationController(database).getView().getMainPanel());
+        tabList.add(vaccinationTab);
+
+        // Vaccine tab
+        Pair<String, Component> vaccineTab = new Pair<>("Vaccines", new VaccineController(database).getView().getMainPanel());
+        tabList.add(vaccineTab);
 
         return tabList;
     }
