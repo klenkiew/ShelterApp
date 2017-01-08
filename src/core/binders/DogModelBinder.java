@@ -2,7 +2,9 @@ package core.binders;
 
 import entities.Dog;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,6 +38,24 @@ public class DogModelBinder implements ModelBinder<Dog>
     public String getTableName()
     {
         return "Pies";
+    }
+
+    @Override
+    public List<Object> getAllParameters(Dog model) {
+        List<Object> parameters = new ArrayList<>();
+        parameters.add(null);  // id - auto-increment in database
+        parameters.add(model.getName());
+        parameters.add(model.isAggressive());
+        parameters.add(model.getAge());
+        parameters.add(model.getBreedId());
+        parameters.add(model.getCoopId());
+        parameters.add(model.getAge());
+        parameters.add(model.isOpen());
+        parameters.add(model.isVulnerable());
+        parameters.add(model.getHairColor());
+        parameters.add(model.getDescription());
+
+        return parameters;
     }
 
     @Override

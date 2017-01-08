@@ -17,7 +17,7 @@ public class AddVaccinationDialog
 {
     private JFormattedTextField textField;
     private JComboBox comboBox;
-    private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     private JButton okButton;
     private JButton cancelButton;

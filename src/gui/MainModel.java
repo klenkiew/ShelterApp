@@ -1,24 +1,31 @@
 package gui;
 
 import core.repositories.ModelRepository;
-import entities.Dog;
-
 import javax.swing.table.DefaultTableModel;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
- * Created by Kamil on 27.12.2016.
+ * Created by mkk-1 on 08/01/2017.
  */
-public class MainModel
-{
+public class MainModel<ModelType> {
     private DefaultTableModel tableModel;
-    private ModelRepository<Dog> dogsRepository;
+    private ModelRepository<ModelType> repository;
 
-    public MainModel(ModelRepository<Dog> dogsRepository)
+    protected String[] getColumnTitles()
     {
-        this.dogsRepository = dogsRepository;
-        String[] columnTitles = {"Id", "Name", "Age", "A", "O", "V"};
+        return null;
+    }
+
+    protected Object[] getRowData(ModelType obj)
+    {
+        return null;
+    }
+
+    public MainModel(ModelRepository<ModelType> repository)
+    {
+        this.repository = repository;
+        String[] columnTitles = getColumnTitles();
         int rowCount = 0;
         tableModel = new DefaultTableModel(columnTitles, rowCount)
         {
@@ -44,18 +51,16 @@ public class MainModel
 
     public void loadData() throws NoSuchFieldException, IllegalAccessException, SQLException
     {
-        ArrayList<Dog> dogsArrayList = dogsRepository.getAll();
-        Dog[] dogs = dogsArrayList.toArray(new Dog[dogsArrayList.size()]);
-        for(Dog dog : dogs)
-        {
-            Object[] rowData = new Object[] {dog.getId(), dog.getName(), dog.getAge(), dog.isAggressive(), dog.isOpen(), dog.isVulnerable()};
-            tableModel.addRow(rowData);
-        }
+        tableModel.setRowCount(0); ///< Clears all old rows
+
+        ArrayList<ModelType> objectArrayList = repository.getAll();
+        for(ModelType obj : objectArrayList)
+            tableModel.addRow(getRowData(obj));
     }
 
-    public Dog getDogById(int id) throws NoSuchFieldException, IllegalAccessException, SQLException
+    public ModelType getObjById(int id) throws NoSuchFieldException, IllegalAccessException, SQLException
     {
-        return dogsRepository.getById(id);
+        return repository.getById(id);
     }
 
     public DefaultTableModel getTableModel()

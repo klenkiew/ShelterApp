@@ -2,7 +2,9 @@ package core.binders;
 
 import entities.Vaccination;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,7 +31,18 @@ public class VaccinationModelBinder implements ModelBinder<Vaccination>
     @Override
     public String getTableName()
     {
-        return "Szczepionka";
+        return "Szczepienie";
+    }
+
+    @Override
+    public List<Object> getAllParameters(Vaccination model) {
+        List<Object> parameters = new ArrayList<>();
+        parameters.add(null);  // id - auto-increment in database
+        parameters.add(model.getVaccinationDate());
+        parameters.add(model.getDogId());
+        parameters.add(model.getVaccineId());
+
+        return parameters;
     }
 
     @Override

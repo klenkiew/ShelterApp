@@ -2,7 +2,9 @@ package core.binders;
 
 import entities.Disease;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,6 +34,20 @@ public class DiseaseModelBinder implements ModelBinder<Disease>
     @Override
     public String getTableName() {
         return "Choroba";
+    }
+
+    @Override
+    public List<Object> getAllParameters(Disease model) {
+        List<Object> parameters = new ArrayList<>();
+        parameters.add(null);  // id - auto-increment in database
+        parameters.add(model.getName());
+        parameters.add(model.getLethality());
+        parameters.add(model.getSymptoms());
+        parameters.add(model.getDescription());
+        parameters.add(model.getCaseCount());
+        parameters.add(model.getDeathCount());
+
+        return parameters;
     }
 
     @Override

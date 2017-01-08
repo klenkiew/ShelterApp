@@ -3,9 +3,7 @@ package core.binders;
 import core.Factory;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Created by Kamil on 27.12.2016.
@@ -25,6 +23,12 @@ public class ModelBinderBase<ModelType> implements ModelBinder<ModelType>
     public String getTableName()
     {
         return new String();
+    }
+
+    @Override
+    public List<Object> getAllParameters(ModelType model)
+    {
+        return new ArrayList();
     }
 
     @Override

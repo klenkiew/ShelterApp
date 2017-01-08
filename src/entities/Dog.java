@@ -29,6 +29,26 @@ public class Dog
         this.id = id;
     }
 
+    public int getBreedId()
+    {
+        return breedId;
+    }
+
+    public void setBreedId(int id)
+    {
+        this.breedId = id;
+    }
+
+    public int getCoopId()
+    {
+        return coopId;
+    }
+
+    public void setCoopId(int id)
+    {
+        this.coopId = id;
+    }
+
     public String getName()
     {
         return name;

@@ -7,11 +7,22 @@ import java.util.Date;
  */
 public class DiseaseHistoryRecord
 {
+    private int id;
     private Date diseaseBeginningDate;
     private Date diseaseEndDate;
     private boolean isFatal;
     private int dogId;
     private int diseaseId;
+
+    public int getId()
+    {
+        return id;
+    }
+
+    public void setId(int id)
+    {
+        this.id = id;
+    }
 
     public Date getDiseaseBeginningDate()
     {

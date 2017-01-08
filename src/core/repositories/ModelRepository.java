@@ -6,6 +6,7 @@ import core.binders.ModelBinder;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by mkk-13 on 08/01/2017.
@@ -40,5 +41,17 @@ public class ModelRepository<ModelType> {
             return object;
         object = binder.bindModel(result.get(0));
         return object;
+    }
+
+    public void add(ModelType object) throws SQLException
+    {
+        List<Object> parameters = binder.getAllParameters(object);
+
+        String query = "INSERT INTO " + binder.getTableName() + " VALUES (";
+        for (int i = 0; i < parameters.size(); i++)
+            query += "?,";
+        query = query.substring(0, query.length() - 1) + ")";
+
+        database.update(query, parameters);
     }
 }
