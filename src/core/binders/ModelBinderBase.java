@@ -5,6 +5,7 @@ import core.Factory;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by Kamil on 27.12.2016.
@@ -41,7 +42,7 @@ public class ModelBinderBase<ModelType> implements ModelBinder<ModelType>
             field.setAccessible(true);
             if (field.getType() == boolean.class)
             {
-                boolean value = column.getValue() == "0" ? false : true;
+                boolean value = !Objects.equals(column.getValue(), "0");
                 field.set(model, value);
             }
             else

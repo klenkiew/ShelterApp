@@ -117,7 +117,7 @@ public class MainView
     private void filterCells() {
         RowFilter<TableModel, Object> rf = null;
         try {
-            rf = RowFilter.regexFilter(filterText.getText(), IntStream.rangeClosed(1, table.getColumnCount()).toArray());
+            rf = RowFilter.regexFilter(filterText.getText(), IntStream.rangeClosed(0, table.getColumnCount()-1).toArray());
         } catch (PatternSyntaxException e) {
             return;
         }
