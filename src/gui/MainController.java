@@ -6,6 +6,7 @@ import core.binders.ModelBinder;
 import core.binders.VaccinationModelBinder;
 import core.binders.VaccineModelBinder;
 import core.repositories.DogsRepository;
+import core.repositories.ModelRepository;
 import core.repositories.VaccinationRepository;
 import core.repositories.VaccineRepository;
 import entities.Dog;
@@ -13,6 +14,8 @@ import entities.Vaccination;
 import entities.Vaccine;
 
 import javax.swing.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -33,17 +36,15 @@ public class MainController
     {
         Database database = new Database();
         ModelBinder<Dog> binder = new DogModelBinder();
-        DogsRepository dogsRepository = new DogsRepository(database, binder);
+        ModelRepository<Dog> dogsRepository = new ModelRepository<>(database, binder);
         MainModel model = new MainModel(dogsRepository);
-        MainView view = new MainView(model);
-        MainController controller = new MainController(view, model, database);
-        view.setMainController(controller);
+        MainController controller = new MainController(model, database);
         return controller;
     }
 
-    public MainController(MainView view, MainModel model, Database database)
+    public MainController(MainModel model, Database database)
     {
-        this.view = view;
+        this.view = new MainView(this, model);
         this.model = model;
         this.database = database;
     }
@@ -79,34 +80,40 @@ public class MainController
         }
     }
 
-    public void onDetailsButtonClicked()
-    {
-        int selectedRow = view.getSelectedRow();
-        // no row selected
-        if (selectedRow == -1)
-            return;
-        Vector data = (Vector) model.getTableModel().getDataVector().get(selectedRow);
-        try
-        {
-            Dog dog = model.getDogById((Integer) data.get(0));
-            view.displayDialogFor(dog);
-        }
-        catch (NoSuchFieldException | IllegalAccessException e1)
-        {
-            String errorMessage = "Model binding error occurred.";
-            view.displayError(errorMessage);
-            e1.printStackTrace();
-        } catch (SQLException e1)
-        {
-            String errorMessage = "Database error occurred.";
-            view.displayError(errorMessage);
-            e1.printStackTrace();
+    public class onMouseDoubleClick extends MouseAdapter {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (e.getClickCount() == 2)
+            {
+                JTable target = (JTable) e.getSource();
+                int row = target.getSelectedRow();
+
+                try
+                {
+                    Dog dog = model.getDogById((Integer) target.getValueAt(row, 0));
+                    view.displayDialogFor(dog);
+                }
+                catch (NoSuchFieldException | IllegalAccessException e1)
+                {
+                    String errorMessage = "Model binding error occurred.";
+                    view.displayError(errorMessage);
+                    e1.printStackTrace();
+                } catch (SQLException e1)
+                {
+                    String errorMessage = "Database error occurred.";
+                    view.displayError(errorMessage);
+                    e1.printStackTrace();
+                }
+            }
         }
     }
 
     public void onAddVaccinationClicked()
     {
         int[] rows = view.getSelectedRows();
+        if (rows.length == 0)
+            return;
+
         try
         {
             List<Vaccine> vaccines = new VaccineRepository(database, new VaccineModelBinder()).getAll();
@@ -122,11 +129,10 @@ public class MainController
             VaccinationRepository vaccinationRepository = new VaccinationRepository(database, new VaccinationModelBinder());
             for (int row : rows)
             {
-                vaccination.setId((int)(Math.random()*1e10)); // TODO: comment when auto-increment enabled in database
-                vaccination.setDogId(row + 1); // for now dog's id = row + 1, TODO: change to get actual dog id
+                vaccination.setDogId(Integer.parseInt(view.getCellValue(row, 0).toString()));
                 vaccinationRepository.add(vaccination);
             }
-        } catch (NoSuchFieldException | IllegalAccessException | SQLException e)
+        } catch (NoSuchFieldException | IllegalAccessException | SQLException | ParseException e)
         {
             String errorMessage = "Database error occurred.";
             view.displayError(errorMessage);

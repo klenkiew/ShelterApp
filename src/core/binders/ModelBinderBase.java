@@ -21,6 +21,12 @@ public class ModelBinderBase<ModelType> implements ModelBinder<ModelType>
     }
 
     @Override
+    public String getTableName()
+    {
+        return new String();
+    }
+
+    @Override
     public ModelType bindModel(HashMap<String, Object> data) throws NoSuchFieldException, IllegalAccessException
     {
         ModelType model = factory.getInstance();

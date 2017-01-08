@@ -33,6 +33,12 @@ public class DogModelBinder implements ModelBinder<Dog>
     }
 
     @Override
+    public String getTableName()
+    {
+        return "Pies";
+    }
+
+    @Override
     public Dog bindModel(HashMap<String, Object> data) throws NoSuchFieldException, IllegalAccessException
     {
         return modelBinderBase.bindModel(data);

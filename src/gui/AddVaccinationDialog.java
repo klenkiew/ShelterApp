@@ -3,8 +3,10 @@ package gui;
 import entities.Vaccine;
 
 import javax.swing.*;
+import javax.swing.text.DateFormatter;
 import java.awt.*;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -16,6 +18,7 @@ public class AddVaccinationDialog
 
     private JFormattedTextField textField;
     private JComboBox comboBox;
+    private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     private JButton okButton;
     private JButton cancelButton;
@@ -24,8 +27,7 @@ public class AddVaccinationDialog
 
     public AddVaccinationDialog(Vaccine[] items)
     {
-        DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
-        textField = new JFormattedTextField(dateFormat);
+        textField = new JFormattedTextField(new DateFormatter(dateFormat));
         textField.setValue(new Date());
         comboBox = new JComboBox(items);
         comboBox.setRenderer(new DefaultListCellRenderer()
@@ -34,7 +36,7 @@ public class AddVaccinationDialog
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 if(value instanceof Vaccine){
-                    Vaccine vaccine= (Vaccine) value;
+                    Vaccine vaccine = (Vaccine)value;
                     setText(String.valueOf(vaccine.getId()));
                 }
                 return this;
@@ -59,8 +61,8 @@ public class AddVaccinationDialog
         return (Vaccine) comboBox.getSelectedItem();
     }
 
-    public Date getDate()
+    public Date getDate() throws ParseException
     {
-        return new Date(textField.getText());
+        return dateFormat.parse(textField.getText());
     }
 }

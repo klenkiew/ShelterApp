@@ -3,8 +3,14 @@ package gui;
 import entities.Dog;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.util.regex.PatternSyntaxException;
+import java.util.stream.IntStream;
 
 /**
  * Created by Kamil on 27.12.2016.
@@ -12,52 +18,110 @@ import java.awt.*;
 public class MainView
 {
     private final String title = "Shelter";
-    private JButton detailsButton;
-    private JButton addVaccinationButton;
+    private MainController mainController;
 
     private JFrame mainFrame;
-    private MainController mainController;
-    private MainModel mainModel;
-
+    private JTextField filterText;
     private JTable table;
-    private DefaultTableModel tableModel;
-    private JScrollPane scrollPane;
+    private TableRowSorter<TableModel> sorter;
     private JPanel leftMenu;
+    private JButton addVaccinationButton;
+    private JButton addDogButton;
 
-    public MainView(MainModel mainModel)
+    public MainView(MainController controller, MainModel mainModel)
     {
+        this.mainController = controller;
         initializeComponents(mainModel);
         setUpActionListeners();
     }
 
     private void initializeComponents(MainModel mainModel)
     {
-        this.mainModel = mainModel;
+        // Main window setup
         mainFrame = new JFrame();
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setTitle(title);
-        mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        mainFrame.setMinimumSize(new Dimension(500, 300));
+        mainFrame.setSize(new Dimension(600, 600));
+        mainFrame.setLocationRelativeTo(null); ///< Used to center window
         mainFrame.setLayout(new BorderLayout());
-        tableModel = mainModel.getTableModel();
-        table = new JTable(tableModel);
-        scrollPane = new JScrollPane(table);
-        mainFrame.add(scrollPane, BorderLayout.CENTER);
-        detailsButton = new JButton("Details");
-        addVaccinationButton = new JButton("Add vaccination");
-        // prevents stretching in y axis
-        detailsButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, detailsButton.getPreferredSize().height));
-        addVaccinationButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, addVaccinationButton.getPreferredSize().height));
+
+        // Main tab container
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+
+        // Data panel holding data table & related stuff
+        JPanel dataPanel = new JPanel();
+        dataPanel.setLayout(new BoxLayout(dataPanel, BoxLayout.Y_AXIS));
+
+        // SUB(Data) Table filtering panel
+        JPanel filterPanel = new JPanel(new BorderLayout());
+        filterText = new JTextField();
+        filterText.getDocument().addDocumentListener(
+            new DocumentListener() {
+                public void changedUpdate(DocumentEvent e) {
+                    filterCells();
+                }
+                public void insertUpdate(DocumentEvent e) {
+                    filterCells();
+                }
+                public void removeUpdate(DocumentEvent e) {
+                    filterCells();
+                }
+            }
+        );
+        filterPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, filterText.getPreferredSize().height));
+        filterPanel.add(new JLabel("Filter: "), BorderLayout.WEST);
+        filterPanel.add(filterText);
+        dataPanel.add(filterPanel, BorderLayout.NORTH);
+
+        // SUB(Data) Table panel
+        table = new JTable(mainModel.getTableModel());
+        sorter = new TableRowSorter<>(mainModel.getTableModel());
+        table.setRowSorter(sorter);
+        table.getTableHeader().setReorderingAllowed(false);
+        dataPanel.add(new JScrollPane(table));
+
+        // Left button panel holding buttons and functionality related to visible data
         leftMenu = new JPanel();
         leftMenu.setLayout(new BoxLayout(leftMenu, BoxLayout.Y_AXIS));
-        leftMenu.add(detailsButton);
+
+        // SUB(Left) AddVaccination button
+        addVaccinationButton = new JButton("Add vaccination");
+        addVaccinationButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, addVaccinationButton.getPreferredSize().height));
         leftMenu.add(addVaccinationButton);
-        mainFrame.add(leftMenu, BorderLayout.WEST);
+
+        // SUB(Left) AddDog button
+        addDogButton = new JButton("Add dog");
+        addVaccinationButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, addVaccinationButton.getPreferredSize().height));
+        leftMenu.add(addVaccinationButton);
+        addDogButton.setEnabled(false); ///< TODO: rm after implementation
+
+        // Add parent panels to main tab container
+        mainPanel.add(leftMenu, BorderLayout.WEST);
+        mainPanel.add(dataPanel, BorderLayout.CENTER);
+
+        // Add current tab container to main tabbed panel
+        JTabbedPane tb = new JTabbedPane();
+        tb.addTab("Dogs", mainPanel);
+        mainFrame.add(tb);
     }
 
     private void setUpActionListeners()
     {
-        detailsButton.addActionListener(e -> mainController.onDetailsButtonClicked());
+        table.addMouseListener(mainController.new onMouseDoubleClick());
         addVaccinationButton.addActionListener(e -> mainController.onAddVaccinationClicked());
+
+    }
+
+    private void filterCells() {
+        RowFilter<TableModel, Object> rf = null;
+        try {
+            rf = RowFilter.regexFilter(filterText.getText(), IntStream.rangeClosed(1, table.getColumnCount()).toArray());
+        } catch (PatternSyntaxException e) {
+            return;
+        }
+        sorter.setRowFilter(rf);
     }
 
     public void setVisible(boolean value)
@@ -65,16 +129,29 @@ public class MainView
         mainFrame.setVisible(value);
     }
 
-    public void setMainController(MainController mainController)
-    {
-        this.mainController = mainController;
-    }
-
     public void displayDialogFor(Dog dog)
     {
-        String msg = "Name: " + dog.getName() + "\n Age: " + dog.getAge() + "\n Description: "
-                + dog.getDescription() + "\n Aggressiveness: " + dog.isAggressive();
-        JOptionPane.showMessageDialog(null, msg, "Dog details", JOptionPane.INFORMATION_MESSAGE);
+        String traits = "";
+        if (dog.isAggressive())
+            traits += " aggresive";
+        if (dog.isOpen()) {
+            if (!traits.isEmpty())
+                traits += ",";
+            traits += " open";
+        }
+        if (dog.isVulnerable()) {
+            if (!traits.isEmpty())
+                traits += ",";
+            traits += " vulnerable";
+        }
+
+        String msg = "Name: " + dog.getName()
+                + "\nAge: " + dog.getAge()
+                + "\nHair color: " + dog.getHairColor()
+                + "\nDescription: " + dog.getDescription();
+        if (!traits.isEmpty())
+            msg += "\nTraits: " + traits;
+        JOptionPane.showMessageDialog(null, msg, dog.getName() + "'s details", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void displayError(String errorMessage)
@@ -85,6 +162,11 @@ public class MainView
     public int getSelectedRow()
     {
         return table.getSelectedRow();
+    }
+
+    public Object getCellValue(int row, int column)
+    {
+        return table.getValueAt(row, column);
     }
 
     public int[] getSelectedRows()

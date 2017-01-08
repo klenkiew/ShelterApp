@@ -7,5 +7,6 @@ import java.util.HashMap;
  */
 public interface ModelBinder<ModelType>
 {
+    String getTableName();
     ModelType bindModel(HashMap<String, Object> data) throws NoSuchFieldException, IllegalAccessException;
 }

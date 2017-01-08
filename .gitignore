@@ -1,0 +1,9 @@
+# IDEA files
+.idea/
+*.iml
+
+# Our files
+*.conf
+*.jar
+out/
+
