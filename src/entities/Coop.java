@@ -9,7 +9,7 @@ public class Coop
     private int areaM2;
     private int capacity;
     private int numberOfDogs;
-    private int roomIdl;
+    private int roomId;
 
     public int getId()
     {
@@ -51,13 +51,13 @@ public class Coop
         this.numberOfDogs = numberOfDogs;
     }
 
-    public int getRoomIdl()
+    public int getRoomId()
     {
-        return roomIdl;
+        return roomId;
     }
 
-    public void setRoomIdl(int roomIdl)
+    public void setRoomId(int roomId)
     {
-        this.roomIdl = roomIdl;
+        this.roomId = roomId;
     }
 }

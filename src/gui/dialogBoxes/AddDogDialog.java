@@ -80,7 +80,7 @@ public class AddDogDialog
         });
 
         coopComboBox = new JComboBox(coops);
-        breedComboBox.setRenderer(new DefaultListCellRenderer()
+        coopComboBox.setRenderer(new DefaultListCellRenderer()
         {
             @Override
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -93,5 +93,50 @@ public class AddDogDialog
             }
         });
         coopComboBox.setName("Choose coop id");
+    }
+
+    public Breed getSelectedBreed()
+    {
+        return (Breed) breedComboBox.getSelectedItem();
+    }
+
+    public Coop getSelectedCoop()
+    {
+        return (Coop) coopComboBox.getSelectedItem();
+    }
+
+    public String getName()
+    {
+        return nameTextField.getText();
+    }
+
+    public int getAge()
+    {
+        int age = -1;
+        try {
+            age = Integer.parseInt(ageTextField.getText());
+        } catch (Exception ex){}
+
+        return age;
+    }
+
+    public String getDescription()
+    {
+        return descriptionTextArea.getText();
+    }
+
+    public boolean isAggresiveChecked()
+    {
+        return aggressiveCheckBox.isSelected();
+    }
+
+    public boolean isOpenChecked()
+    {
+        return openCheckBox.isSelected();
+    }
+
+    public boolean isVulnerableChecked()
+    {
+        return vulnerableCheckBox.isSelected();
     }
 }

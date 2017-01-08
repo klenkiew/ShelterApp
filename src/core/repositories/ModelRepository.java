@@ -52,6 +52,8 @@ public class ModelRepository<ModelType> {
             query += "?,";
         query = query.substring(0, query.length() - 1) + ")";
 
+        System.out.println(query);
+        System.out.println(parameters);
         database.update(query, parameters);
     }
 }

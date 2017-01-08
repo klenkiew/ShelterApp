@@ -38,7 +38,7 @@ public class MainModel<ModelType> {
             @Override
             public Class getColumnClass(int column) {
                 Class returnValue;
-                if ((column >= 0) && (column < getColumnCount())) {
+                if ((column >= 0) && (column < getColumnCount()) && getRowCount() > 0) {
                     returnValue = getValueAt(0, column).getClass();
                 } else {
                     returnValue = Object.class;
@@ -56,6 +56,7 @@ public class MainModel<ModelType> {
         ArrayList<ModelType> objectArrayList = repository.getAll();
         for(ModelType obj : objectArrayList)
             tableModel.addRow(getRowData(obj));
+        tableModel.fireTableDataChanged();
     }
 
     public ModelType getObjById(int id) throws NoSuchFieldException, IllegalAccessException, SQLException
