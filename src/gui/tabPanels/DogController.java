@@ -48,8 +48,42 @@ public class DogController extends TabController
 
     public void addDogClicked()
     {
-        // TODO: implement method
-        new AddDogDialog(new Breed[0], new Coop[0]).display();
+        try {
+            List<Breed> breeds = new ModelRepository<>(database, new BreedModelBinder()).getAll();
+            List<Coop> coops = new ModelRepository<>(database, new CoopModelBinder()).getAll();
+            AddDogDialog addDogDialog = new AddDogDialog(breeds.toArray(new Breed[breeds.size()]),
+                                                     coops.toArray(new Coop[coops.size()]));
+
+            int result = addDogDialog.display();
+            if (result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION)
+                return;
+
+            int age = addDogDialog.getAge();
+            if (age < 0 || age > 30)
+            {
+                String errorMessage = "Wrong age given!\nAge value should be in range [0; 30]";
+                view.displayError(errorMessage);
+                return;
+            }
+
+            Dog dog = new Dog();
+            dog.setName(addDogDialog.getName());
+            dog.setAge(age);
+            dog.setDescription(addDogDialog.getDescription());
+            dog.setAggressive(addDogDialog.isAggresiveChecked());
+            dog.setOpen(addDogDialog.isOpenChecked());
+            dog.setVulnerable(addDogDialog.isVulnerableChecked());
+            dog.setBreedId(addDogDialog.getSelectedBreed().getId());
+            dog.setCoopId(addDogDialog.getSelectedCoop().getId());
+            new ModelRepository<>(database, new DogModelBinder()).add(dog);
+            model.loadData();
+
+        } catch (NoSuchFieldException | IllegalAccessException | SQLException e)
+        {
+            String errorMessage = "Database error occurred.";
+            view.displayError(errorMessage);
+            e.printStackTrace();
+        }
         return;
     }
 
@@ -90,11 +124,19 @@ public class DogController extends TabController
         try
         {
             List<Vaccine> vaccines = new ModelRepository<>(database, new VaccineModelBinder()).getAll();
-            AddVaccinationDialog addVaccinationDialog = new AddVaccinationDialog(vaccines.toArray(new Vaccine[vaccines.size()]));
+            List<Disease> diseases = new ModelRepository<>(database, new DiseaseModelBinder()).getAll();
+            AddVaccinationDialog addVaccinationDialog = new AddVaccinationDialog(diseases.toArray(new Disease[diseases.size()]),
+                                                                                 vaccines.toArray(new Vaccine[vaccines.size()]));
             int result = addVaccinationDialog.display();
-            if (result == JOptionPane.CANCEL_OPTION)
+            if (result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION)
                 return;
             Vaccine vaccine = addVaccinationDialog.getSelectedVaccine();
+            if (vaccine == null)
+            {
+                String errorMessage = "No vaccine selected!\nMaybe there are no vaccines available for chosen disease?";
+                view.displayError(errorMessage);
+                return;
+            }
             Date date = addVaccinationDialog.getDate();
             Vaccination vaccination = new Vaccination();
             vaccination.setVaccinationDate(date);
@@ -121,11 +163,10 @@ public class DogController extends TabController
 
         try
         {
-
             List<Disease> diseases = new ModelRepository<>(database, new DiseaseModelBinder()).getAll();
             AddDiseaseDialog addDiseaseDialog = new AddDiseaseDialog(diseases.toArray(new Disease[diseases.size()]));
             int result = addDiseaseDialog.display();
-            if (result == JOptionPane.CANCEL_OPTION)
+            if (result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION)
                 return;
             Disease disease = addDiseaseDialog.getSelectedDisease();
             Date date = addDiseaseDialog.getDate();

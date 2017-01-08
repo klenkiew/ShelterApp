@@ -46,7 +46,6 @@ public class DogModelBinder implements ModelBinder<Dog>
         parameters.add(null);  // id - auto-increment in database
         parameters.add(model.getName());
         parameters.add(model.isAggressive());
-        parameters.add(model.getAge());
         parameters.add(model.getBreedId());
         parameters.add(model.getCoopId());
         parameters.add(model.getAge());
