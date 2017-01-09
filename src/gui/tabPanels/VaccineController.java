@@ -6,6 +6,7 @@ import core.binders.VaccineModelBinder;
 import core.repositories.ModelRepository;
 import entities.Disease;
 import entities.Vaccine;
+import gui.MainController;
 import gui.MainModel;
 import gui.VaccineModel;
 import gui.dialogBoxes.AddVaccineDialog;
@@ -61,5 +62,6 @@ public class VaccineController extends TabController
             view.displayError("Database error occurred.");
             e.printStackTrace();
         }
+        MainController.getControllerInstance().reloadModels();
     }
 }

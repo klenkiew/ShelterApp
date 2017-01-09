@@ -7,10 +7,7 @@ import entities.*;
 import gui.dialogBoxes.AddDiseaseDialog;
 import gui.dialogBoxes.AddDogDialog;
 import gui.dialogBoxes.AddVaccinationDialog;
-import gui.tabPanels.DiseaseHistoryRecordController;
-import gui.tabPanels.DogController;
-import gui.tabPanels.VaccinationController;
-import gui.tabPanels.VaccineController;
+import gui.tabPanels.*;
 import javafx.util.Pair;
 
 import javax.swing.*;
@@ -31,41 +28,52 @@ public class MainController
 {
     private MainView view;
     private Database database;
+    private ArrayList<TabController> tabs;
+    private static MainController instance;
 
-    public static MainController getControllerInstance()
+    public static synchronized MainController getControllerInstance()
     {
-        Database database = new Database();
-        MainController controller = new MainController(database);
-        return controller;
+        if (instance == null) {
+            Database database = new Database();
+            instance = new MainController(database);
+        }
+        return instance;
     }
 
-    public MainController(Database database)
+    private MainController(Database database)
     {
         this.database = database;
         initializeDatabase();
-        ArrayList<Pair<String, Component>> tabList = initializeTabs();
-        this.view = new MainView(this, tabList);
+        this.view = new MainView(this, initializeTabs());
     }
 
     private ArrayList<Pair<String, Component>> initializeTabs()
     {
         ArrayList<Pair<String, Component>> tabList = new ArrayList<>();
+        tabs = new ArrayList<>();
 
         // Dog tab
-        Pair<String, Component> dogTab = new Pair<>("Dogs", new DogController(database).getView().getMainPanel());
-        tabList.add(dogTab);
+        TabController tempCtrl = new DogController(database);
+        tabs.add(tempCtrl);
+        tabList.add(new Pair<>("Dogs", tempCtrl.getView().getMainPanel()));
+
 
         // Disease history tab
-        Pair<String, Component> recordTab = new Pair<>("DiseasesHistory", new DiseaseHistoryRecordController(database).getView().getMainPanel());
-        tabList.add(recordTab);
+        tempCtrl = new DiseaseHistoryRecordController(database);
+        tabs.add(tempCtrl);
+        tabList.add(new Pair<>("DiseasesHistory", tempCtrl.getView().getMainPanel()));
+
 
         // Vaccination tab
-        Pair<String, Component> vaccinationTab = new Pair<>("Vaccinations", new VaccinationController(database).getView().getMainPanel());
-        tabList.add(vaccinationTab);
+        tempCtrl = new VaccinationController(database);
+        tabs.add(tempCtrl);
+        tabList.add(new Pair<>("Vaccinations", tempCtrl.getView().getMainPanel()));
+
 
         // Vaccine tab
-        Pair<String, Component> vaccineTab = new Pair<>("Vaccines", new VaccineController(database).getView().getMainPanel());
-        tabList.add(vaccineTab);
+        tempCtrl = new VaccineController(database);
+        tabs.add(tempCtrl);
+        tabList.add(new Pair<>("Vaccines", tempCtrl.getView().getMainPanel()));
 
         return tabList;
     }
@@ -95,6 +103,16 @@ public class MainController
             String errorMessage = "Database configuration file parsing error.";
             view.displayError(errorMessage);
             e.printStackTrace();
+        }
+    }
+
+    public void reloadModels()
+    {
+        try {
+            for (TabController tab : tabs)
+                tab.getModel().loadData();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 }

@@ -24,6 +24,11 @@ public class TabController {
         return view;
     }
 
+    public MainModel getModel()
+    {
+        return model;
+    }
+
     protected TabView getNewView(TabController controller, MainModel mainModel)
     {
         return null;

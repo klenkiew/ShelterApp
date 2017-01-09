@@ -21,7 +21,9 @@ import java.util.stream.IntStream;
 public class VaccinationView extends TabView
 {
     private JComboBox dogComboBox;
+    private JCheckBox dogCheckBox;
     private JComboBox diseaseComboBox;
+    private JCheckBox diseaseCheckBox;
 
     public VaccinationView(TabController controller, MainModel mainModel)
     {
@@ -47,6 +49,7 @@ public class VaccinationView extends TabView
             e.printStackTrace();
         }
         dogComboBox = new JComboBox(dogs.toArray(new Dog[dogs.size()]));
+        dogComboBox.setEnabled(false);
         diseaseComboBox = new JComboBox(diseases.toArray(new Disease[diseases.size()]));
         diseaseComboBox.setEnabled(false); // TODO: remove when implemented properly
         dogComboBox.setRenderer(new DefaultListCellRenderer()
@@ -73,10 +76,23 @@ public class VaccinationView extends TabView
                 return this;
             }
         });
+        JPanel pane = new JPanel();
+        pane.setLayout(new BorderLayout());
+        dogCheckBox = new JCheckBox();
+        diseaseCheckBox = new JCheckBox();
+        diseaseCheckBox.setEnabled(false); ///< TODO: enable when disease filtering is implemented
+
         buttonList.add(new JLabel("Choose dog:"));
-        buttonList.add(dogComboBox);
+        pane.add(dogCheckBox, BorderLayout.WEST);
+        pane.add(dogComboBox);
+        buttonList.add(pane);
+
+        pane = new JPanel();
+        pane.setLayout(new BorderLayout());
         buttonList.add(new JLabel("Choose disease:"));
-        buttonList.add(diseaseComboBox);
+        pane.add(diseaseCheckBox, BorderLayout.WEST);
+        pane.add(diseaseComboBox);
+        buttonList.add(pane);
         return buttonList;
     }
 
@@ -87,6 +103,8 @@ public class VaccinationView extends TabView
         table.addMouseListener(vaccinationController.new onMouseDoubleClick());
         diseaseComboBox.addItemListener(e -> filterTableCells());
         dogComboBox.addItemListener(e -> filterTableCells());
+        dogCheckBox.addItemListener(e -> onDogCheckboxChange());
+        diseaseCheckBox.addItemListener(e -> onDiseaseCheckboxChange());
     }
 
     @Override
@@ -98,14 +116,35 @@ public class VaccinationView extends TabView
         // not disease id
         try {
             filters.add(RowFilter.regexFilter('^' + filterText.getText(), IntStream.rangeClosed(0, table.getColumnCount()-1).toArray()));
-            Dog selectedDog = (Dog) dogComboBox.getSelectedItem();
-            String regex = String.valueOf('^' + selectedDog.getId() + '$');
-            filters.add(RowFilter.regexFilter(regex, 2));
+            if (dogComboBox.isEnabled())
+            {
+                Dog selectedDog = (Dog) dogComboBox.getSelectedItem();
+                String regex = "^" + String.valueOf(selectedDog.getId()) + "$";
+                filters.add(RowFilter.regexFilter(regex, 2));
+            }
         } catch (PatternSyntaxException e) {
             return;
         }
         rf = RowFilter.andFilter(filters);
         sorter.setRowFilter(rf);
+    }
+
+    private void onDogCheckboxChange()
+    {
+        if (dogCheckBox.isSelected())
+            dogComboBox.setEnabled(true);
+        else
+            dogComboBox.setEnabled(false);
+        filterTableCells();
+    }
+
+    private void onDiseaseCheckboxChange()
+    {
+        if (diseaseCheckBox.isSelected())
+            diseaseComboBox.setEnabled(true);
+        else
+            diseaseComboBox.setEnabled(false);
+        filterTableCells();
     }
 
     public void displayDialogFor(Vaccination vaccination)

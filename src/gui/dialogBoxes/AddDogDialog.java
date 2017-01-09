@@ -19,8 +19,8 @@ public class AddDogDialog
     private JCheckBox vulnerableCheckBox;
 
     private JTextField nameTextField;
-    // TODO: add validation (only positive numbers, probably < ~30), maybe JSpinner to change values?
     private JTextField ageTextField;
+    private JTextField hairColorTextField;
 
     private JTextArea descriptionTextArea;
     private JScrollPane descriptionScrollPane;
@@ -36,6 +36,7 @@ public class AddDogDialog
 
         nameTextField = new JTextField();
         ageTextField = new JTextField();
+        hairColorTextField = new JTextField();
         descriptionTextArea = new JTextArea(10, 20);
         descriptionTextArea.setLineWrap(true);
         descriptionTextArea.setWrapStyleWord(true);
@@ -52,9 +53,15 @@ public class AddDogDialog
         openCheckBox = new JCheckBox("Is open");
         vulnerableCheckBox = new JCheckBox("Is vulnerable");
 
-        components = new JComponent[] {new JLabel("Name:"), nameTextField, new JLabel("Age:"), ageTextField,
-                new JLabel("Choose breed"), breedComboBox, new JLabel("Choose coop id"), coopComboBox,
-                aggressiveCheckBox, openCheckBox, vulnerableCheckBox, new JLabel("Description:"), descriptionScrollPane};
+        components = new JComponent[] {new JLabel("Name:"), nameTextField,
+                new JLabel("Age:"), ageTextField,
+                new JLabel("Choose breed"), breedComboBox,
+                new JLabel("Hair color"), hairColorTextField,
+                new JLabel("Choose coop id"), coopComboBox,
+                aggressiveCheckBox,
+                openCheckBox,
+                vulnerableCheckBox,
+                new JLabel("Description:"), descriptionScrollPane};
     }
 
     public int display()
@@ -118,6 +125,11 @@ public class AddDogDialog
         } catch (Exception ex){}
 
         return age;
+    }
+
+    public String getHairColor()
+    {
+        return hairColorTextField.getText();
     }
 
     public String getDescription()

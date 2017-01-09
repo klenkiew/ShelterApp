@@ -5,6 +5,7 @@ import core.binders.*;
 import core.repositories.*;
 import entities.*;
 import gui.DogModel;
+import gui.MainController;
 import gui.MainModel;
 import gui.dialogBoxes.AddDiseaseDialog;
 import gui.dialogBoxes.AddDogDialog;
@@ -69,6 +70,7 @@ public class DogController extends TabController
             Dog dog = new Dog();
             dog.setName(addDogDialog.getName());
             dog.setAge(age);
+            dog.setHairColor(addDogDialog.getHairColor());
             dog.setDescription(addDogDialog.getDescription());
             dog.setAggressive(addDogDialog.isAggresiveChecked());
             dog.setOpen(addDogDialog.isOpenChecked());
@@ -76,7 +78,7 @@ public class DogController extends TabController
             dog.setBreedId(addDogDialog.getSelectedBreed().getId());
             dog.setCoopId(addDogDialog.getSelectedCoop().getId());
             new ModelRepository<>(database, new DogModelBinder()).add(dog);
-            model.loadData();
+            //model.loadData();
 
         } catch (NoSuchFieldException | IllegalAccessException | SQLException e)
         {
@@ -84,7 +86,7 @@ public class DogController extends TabController
             view.displayError(errorMessage);
             e.printStackTrace();
         }
-        return;
+        MainController.getControllerInstance().reloadModels();
     }
 
     public class onMouseDoubleClick extends MouseAdapter {
@@ -153,6 +155,7 @@ public class DogController extends TabController
             view.displayError(errorMessage);
             e.printStackTrace();
         }
+        MainController.getControllerInstance().reloadModels();
     }
 
     public void addDiseaseClicked()
@@ -187,5 +190,6 @@ public class DogController extends TabController
             view.displayError(errorMessage);
             e.printStackTrace();
         }
+        MainController.getControllerInstance().reloadModels();
     }
 }

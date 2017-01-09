@@ -33,11 +33,11 @@ public class MainView
         mainFrame.setLayout(new BorderLayout());
 
         // Add current tab container to main tabbed panel
-        JTabbedPane tb = new JTabbedPane();
+        JTabbedPane tabPane = new JTabbedPane();
         for (Pair<String, Component> tab : tabs)
-            tb.addTab(tab.getKey(), tab.getValue());
+            tabPane.addTab(tab.getKey(), tab.getValue());
 
-        mainFrame.add(tb);
+        mainFrame.add(tabPane);
     }
 
     public void setVisible(boolean value)
