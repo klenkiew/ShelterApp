@@ -11,11 +11,11 @@ public class VaccineModel extends MainModel<Vaccine>
     @Override
     protected String[] getColumnTitles()
     {
-        // TODO: redundant column in vaccine: disease name?
         String[] columnTitles = { "Id",
                 "Months per dose",
                 "Is obligatory",
                 "Disease id",
+                "Disease name",
         };
 
         return columnTitles;
@@ -28,6 +28,7 @@ public class VaccineModel extends MainModel<Vaccine>
                 obj.getHowManyMonthsPerDose(),
                 obj.isObligatory(),
                 obj.getDiseaseId(),
+                obj.getDiseaseName()
         };
 
         return rowData;

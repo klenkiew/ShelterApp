@@ -21,6 +21,7 @@ public class VaccineModelBinder implements ModelBinder<Vaccine>
         columnsToFieldsMappings.put("CoIleMiesiecy", "howManyMonthsPerDose");
         columnsToFieldsMappings.put("CzyObowiazkowa", "isObligatory");
         columnsToFieldsMappings.put("ChorobaId", "diseaseId");
+        columnsToFieldsMappings.put("ChorobaNazwa", "diseaseName");
     }
 
     public VaccineModelBinder()

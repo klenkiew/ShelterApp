@@ -9,6 +9,7 @@ public class Vaccine
     private int howManyMonthsPerDose;
     private boolean isObligatory;
     private int diseaseId;
+    private String diseaseName;
 
     public int getId()
     {
@@ -48,5 +49,15 @@ public class Vaccine
     public void setDiseaseId(int diseaseId)
     {
         this.diseaseId = diseaseId;
+    }
+
+    public String getDiseaseName()
+    {
+        return diseaseName;
+    }
+
+    public void setDiseaseName(String diseaseName)
+    {
+        this.diseaseName = diseaseName;
     }
 }
