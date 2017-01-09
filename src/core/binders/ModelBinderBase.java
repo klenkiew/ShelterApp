@@ -32,6 +32,15 @@ public class ModelBinderBase<ModelType> implements ModelBinder<ModelType>
     }
 
     @Override
+    public ArrayList<String> getColumnNames()
+    {
+        ArrayList<String> names = new ArrayList<>();
+        for (Map.Entry<String, String> entry : columnsToFieldsMappings.entrySet())
+            names.add(entry.getKey());
+        return names;
+    }
+
+    @Override
     public ModelType bindModel(HashMap<String, Object> data) throws NoSuchFieldException, IllegalAccessException
     {
         ModelType model = factory.getInstance();

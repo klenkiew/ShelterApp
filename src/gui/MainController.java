@@ -1,25 +1,14 @@
 package gui;
 
 import core.*;
-import core.binders.*;
-import core.repositories.*;
-import entities.*;
-import gui.dialogBoxes.AddDiseaseDialog;
-import gui.dialogBoxes.AddDogDialog;
-import gui.dialogBoxes.AddVaccinationDialog;
 import gui.tabPanels.*;
 import javafx.util.Pair;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Kamil on 27.12.2016.
@@ -62,6 +51,11 @@ public class MainController
         tempCtrl = new DiseaseHistoryRecordController(database);
         tabs.add(tempCtrl);
         tabList.add(new Pair<>("DiseasesHistory", tempCtrl.getView().getMainPanel()));
+
+        // Disease history tab
+        tempCtrl = new DiseaseController(database);
+        tabs.add(tempCtrl);
+        tabList.add(new Pair<>("Diseases", tempCtrl.getView().getMainPanel()));
 
 
         // Vaccination tab
@@ -106,6 +100,7 @@ public class MainController
         }
     }
 
+    // TODO: call only if 'preloadDatabase' selected
     public void reloadModels()
     {
         try {

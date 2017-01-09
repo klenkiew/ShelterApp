@@ -43,6 +43,27 @@ public class ModelRepository<ModelType> {
         return object;
     }
 
+    public ArrayList<ModelType> getByText(String text) throws SQLException, NoSuchFieldException, IllegalAccessException
+    {
+        ArrayList<String> columnNames = binder.getColumnNames();
+        String query = "SELECT * FROM " + binder.getTableName() + " WHERE ";
+        for (int i = 0; i < columnNames.size(); i++)
+        {
+            String column = columnNames.get(i);
+            query += column + " LIKE \'" + text + "%\'";
+            if (i != columnNames.size() - 1)
+                query += " OR ";
+        }
+        ArrayList<HashMap<String, Object>> result = database.query(query, new ArrayList<>());
+        ArrayList<ModelType> objectList = new ArrayList<>();
+        for (HashMap<String, Object> row : result) {
+            ModelType object = binder.bindModel(row);
+            objectList.add(object);
+        }
+        return objectList;
+    }
+
+
     public void add(ModelType object) throws SQLException
     {
         List<Object> parameters = binder.getAllParameters(object);

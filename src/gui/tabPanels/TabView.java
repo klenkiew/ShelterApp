@@ -17,6 +17,8 @@ import java.util.stream.IntStream;
 public class TabView {
     protected TabController controller;
 
+    final boolean preloadDatabase = false;
+
     protected JPanel mainPanel;
     protected JTextField filterText;
     protected JTable table;
@@ -95,13 +97,21 @@ public class TabView {
     }
 
     protected void filterTableCells() {
-        RowFilter<TableModel, Object> rf = null;
-        try {
-            rf = RowFilter.regexFilter('^' + filterText.getText(), IntStream.rangeClosed(0, table.getColumnCount()-1).toArray());
-        } catch (PatternSyntaxException e) {
-            return;
+        // TODO: gui option for database preload?
+        if (preloadDatabase)
+        {
+            RowFilter<TableModel, Object> rf = null;
+            try
+            {
+                rf = RowFilter.regexFilter('^' + filterText.getText(), IntStream.rangeClosed(0, table.getColumnCount() - 1).toArray());
+            } catch (PatternSyntaxException e)
+            {
+                return;
+            }
+            sorter.setRowFilter(rf);
         }
-        sorter.setRowFilter(rf);
+        else
+            controller.filterData(filterText.getText());
     }
 
     public void displayError(String errorMessage)

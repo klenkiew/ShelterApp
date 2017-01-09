@@ -50,7 +50,7 @@ public class VaccinationRepository
     public void add(Vaccination vaccination) throws SQLException
     {
         ArrayList<Object> parameters = new ArrayList<>();
-       // parameters.add(vaccination.getId()); // TODO: comment when auto-increment enabled in database
+       // parameters.add(vaccination.getId());
         parameters.add(null);  // id - auto-increment in database
         parameters.add(vaccination.getVaccinationDate());
         parameters.add(vaccination.getDogId());

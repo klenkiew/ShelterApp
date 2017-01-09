@@ -59,6 +59,17 @@ public class MainModel<ModelType> {
         tableModel.fireTableDataChanged();
     }
 
+    public void loadFilteredData(String filterText) throws NoSuchFieldException, IllegalAccessException, SQLException
+    {
+        tableModel.setRowCount(0); ///< Clears all old rows
+
+        ArrayList<ModelType> objectArrayList = repository.getByText(filterText);
+        for(ModelType obj : objectArrayList)
+            tableModel.addRow(getRowData(obj));
+        tableModel.fireTableDataChanged();
+    }
+
+
     public ModelType getObjById(int id) throws NoSuchFieldException, IllegalAccessException, SQLException
     {
         return repository.getById(id);

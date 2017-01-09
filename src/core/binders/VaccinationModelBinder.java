@@ -46,6 +46,12 @@ public class VaccinationModelBinder implements ModelBinder<Vaccination>
     }
 
     @Override
+    public ArrayList<String> getColumnNames()
+    {
+        return modelBinderBase.getColumnNames();
+    }
+
+    @Override
     public Vaccination bindModel(HashMap<String, Object> data) throws NoSuchFieldException, IllegalAccessException
     {
         return modelBinderBase.bindModel(data);

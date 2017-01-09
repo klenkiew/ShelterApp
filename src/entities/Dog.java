@@ -4,8 +4,6 @@ package entities;
  * Created by Kamil on 27.12.2016.
  */
 
-// TODO: foreign key fields
-
 public class Dog
 {
     private int id;

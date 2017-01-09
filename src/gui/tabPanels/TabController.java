@@ -1,9 +1,11 @@
 package gui.tabPanels;
 
 import core.Database;
+import core.repositories.ModelRepository;
 import gui.MainModel;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * Created by mkk-1 on 08/01/2017.
@@ -37,6 +39,19 @@ public class TabController {
     protected MainModel getNewModel()
     {
         return null;
+    }
+
+    protected void filterData(String filterText)
+    {
+        try
+        {
+            model.loadFilteredData(filterText);
+        } catch (NoSuchFieldException | IllegalAccessException | SQLException e)
+        {
+            String errorMessage = "Unable to get data from database.";
+            view.displayError(errorMessage);
+            e.printStackTrace();
+        }
     }
 
     private void initialize()

@@ -7,7 +7,7 @@ import entities.*;
 import gui.DogModel;
 import gui.MainController;
 import gui.MainModel;
-import gui.dialogBoxes.AddDiseaseDialog;
+import gui.dialogBoxes.AddDiseaseCaseDialog;
 import gui.dialogBoxes.AddDogDialog;
 import gui.dialogBoxes.AddVaccinationDialog;
 
@@ -167,7 +167,7 @@ public class DogController extends TabController
         try
         {
             List<Disease> diseases = new ModelRepository<>(database, new DiseaseModelBinder()).getAll();
-            AddDiseaseDialog addDiseaseDialog = new AddDiseaseDialog(diseases.toArray(new Disease[diseases.size()]));
+            AddDiseaseCaseDialog addDiseaseDialog = new AddDiseaseCaseDialog(diseases.toArray(new Disease[diseases.size()]));
             int result = addDiseaseDialog.display();
             if (result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION)
                 return;

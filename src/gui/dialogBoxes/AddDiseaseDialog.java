@@ -3,72 +3,69 @@ package gui.dialogBoxes;
 import entities.Disease;
 
 import javax.swing.*;
-import javax.swing.text.DateFormatter;
 import java.awt.*;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
- * Created by Kamil on 08.01.2017.
+ * Created by Kamil on 09.01.2017.
  */
 public class AddDiseaseDialog
 {
-    private JFormattedTextField textField;
-    private JComboBox comboBox;
-    private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-    private JCheckBox checkBox;
+    // TODO: combo box with possible values instead of boolean value
+    private JCheckBox lethalityCheckBox;
 
-    private JButton okButton;
-    private JButton cancelButton;
+    private JTextField nameTextField;
 
     private JComponent[] components;
 
-    public AddDiseaseDialog(Disease[] items)
+    private JTextArea symptomsTextArea;
+    private JScrollPane symptomsScrollPane;
+
+    private JTextArea descriptionTextArea;
+    private JScrollPane descriptionScrollPane;
+
+    public AddDiseaseDialog()
     {
-        textField = new JFormattedTextField(new DateFormatter(dateFormat));
-        textField.setValue(new Date());
-        comboBox = new JComboBox(items);
-        comboBox.setRenderer(new DefaultListCellRenderer()
-        {
-            @Override
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if(value instanceof Disease){
-                    Disease disease = (Disease)value;
-                    setText(String.valueOf(disease.getName()));
-                }
-                return this;
-            }
-        });
-        JPanel buttonsPanel = new JPanel();
-        okButton = new JButton("OK");
-        cancelButton=  new JButton("Cancel");
-        buttonsPanel.add(okButton);
-        buttonsPanel.add(cancelButton);
-        checkBox = new JCheckBox("Was fatal: ");
-        components = new JComponent[] {new JLabel("Choose disease:"), comboBox, checkBox, new JLabel("Infection date:"), textField};
+        lethalityCheckBox = new JCheckBox("Is lethal");
+        nameTextField = new JTextField();
+
+        descriptionTextArea = new JTextArea(10, 20);
+        descriptionTextArea.setLineWrap(true);
+        descriptionTextArea.setWrapStyleWord(true);
+        descriptionScrollPane = new JScrollPane(descriptionTextArea, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        symptomsTextArea = new JTextArea(10, 20);
+        symptomsTextArea.setLineWrap(true);
+        symptomsTextArea.setWrapStyleWord(true);
+        symptomsScrollPane = new JScrollPane(symptomsTextArea, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        components = new JComponent[] {new JLabel("Name:"), nameTextField, lethalityCheckBox,
+                new JLabel("Symptoms:"), symptomsScrollPane, new JLabel("Description:"), descriptionScrollPane};
     }
 
     public int display()
     {
         return JOptionPane.showOptionDialog(null, components, "Add disease", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-//        dialog.setVisible(true);
     }
 
-    public Disease getSelectedDisease()
+    public boolean isLethalitySelected()
     {
-        return (Disease) comboBox.getSelectedItem();
+        return lethalityCheckBox.isSelected();
     }
 
-    public Date getDate() throws ParseException
+    public String getName()
     {
-        return dateFormat.parse(textField.getText());
+        return nameTextField.getText();
     }
 
-    public boolean wasFatal()
+    public String getSymptoms()
     {
-        return checkBox.isSelected();
+        return symptomsTextArea.getText();
+    }
+
+    public String getDescription()
+    {
+        return descriptionTextArea.getText();
     }
 }

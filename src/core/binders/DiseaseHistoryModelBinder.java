@@ -48,7 +48,13 @@ public class DiseaseHistoryModelBinder implements ModelBinder<DiseaseHistoryReco
         return parameters;
     }
 
-        @Override
+    @Override
+    public ArrayList<String> getColumnNames()
+    {
+        return modelBinderBase.getColumnNames();
+    }
+
+    @Override
     public DiseaseHistoryRecord bindModel(HashMap<String, Object> data) throws NoSuchFieldException, IllegalAccessException
     {
         return modelBinderBase.bindModel(data);
