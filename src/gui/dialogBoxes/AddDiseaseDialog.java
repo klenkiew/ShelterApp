@@ -10,8 +10,7 @@ import java.awt.*;
  */
 public class AddDiseaseDialog
 {
-    // TODO: combo box with possible values instead of boolean value
-    private JCheckBox lethalityCheckBox;
+    private JComboBox lethalityComboBox;
 
     private JTextField nameTextField;
 
@@ -25,7 +24,7 @@ public class AddDiseaseDialog
 
     public AddDiseaseDialog()
     {
-        lethalityCheckBox = new JCheckBox("Is lethal");
+        lethalityComboBox = new JComboBox(new String[] {"Znikoma", "Niska", "Srednia", "Wysoka"});
         nameTextField = new JTextField();
 
         descriptionTextArea = new JTextArea(10, 20);
@@ -40,7 +39,7 @@ public class AddDiseaseDialog
         symptomsScrollPane = new JScrollPane(symptomsTextArea, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        components = new JComponent[] {new JLabel("Name:"), nameTextField, lethalityCheckBox,
+        components = new JComponent[] {new JLabel("Name:"), nameTextField, new JLabel("Lethality:"), lethalityComboBox,
                 new JLabel("Symptoms:"), symptomsScrollPane, new JLabel("Description:"), descriptionScrollPane};
     }
 
@@ -49,9 +48,9 @@ public class AddDiseaseDialog
         return JOptionPane.showOptionDialog(null, components, "Add disease", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
     }
 
-    public boolean isLethalitySelected()
+    public String getLethalitySelected()
     {
-        return lethalityCheckBox.isSelected();
+        return (String) lethalityComboBox.getSelectedItem();
     }
 
     public String getName()

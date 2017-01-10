@@ -86,7 +86,8 @@ public class DogController extends TabController
             view.displayError(errorMessage);
             e.printStackTrace();
         }
-        MainController.getControllerInstance().reloadModels();
+        if (MainController.getControllerInstance().isAutoPreload())
+            MainController.getControllerInstance().reloadModels();
     }
 
     public class onMouseDoubleClick extends MouseAdapter {
@@ -155,7 +156,8 @@ public class DogController extends TabController
             view.displayError(errorMessage);
             e.printStackTrace();
         }
-        MainController.getControllerInstance().reloadModels();
+        if (MainController.getControllerInstance().isAutoPreload())
+            MainController.getControllerInstance().reloadModels();
     }
 
     public void addDiseaseClicked()
@@ -190,6 +192,7 @@ public class DogController extends TabController
             view.displayError(errorMessage);
             e.printStackTrace();
         }
-        MainController.getControllerInstance().reloadModels();
+        if (MainController.getControllerInstance().isAutoPreload())
+            MainController.getControllerInstance().reloadModels();
     }
 }

@@ -6,6 +6,7 @@ import javafx.util.Pair;
 
 import java.awt.*;
 import java.io.IOException;
+import java.security.interfaces.RSAMultiPrimePrivateCrtKey;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -19,6 +20,9 @@ public class MainController
     private Database database;
     private ArrayList<TabController> tabs;
     private static MainController instance;
+
+    private boolean preloadDatabase;
+    private boolean autoPreload;
 
     public static synchronized MainController getControllerInstance()
     {
@@ -100,14 +104,35 @@ public class MainController
         }
     }
 
-    // TODO: call only if 'preloadDatabase' selected
     public void reloadModels()
     {
+        if (!preloadDatabase)
+            return;
         try {
             for (TabController tab : tabs)
                 tab.getModel().loadData();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    public boolean isAutoPreload()
+    {
+        return autoPreload;
+    }
+
+    public void setAutoPreload(boolean autoPreload)
+    {
+        this.autoPreload = autoPreload;
+    }
+
+    public boolean isPreloadDatabase()
+    {
+        return preloadDatabase;
+    }
+
+    public void setPreloadDatabase(boolean preloadDatabase)
+    {
+        this.preloadDatabase = preloadDatabase;
     }
 }

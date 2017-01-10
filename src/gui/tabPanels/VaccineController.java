@@ -62,6 +62,7 @@ public class VaccineController extends TabController
             view.displayError("Database error occurred.");
             e.printStackTrace();
         }
-        MainController.getControllerInstance().reloadModels();
+        if (MainController.getControllerInstance().isAutoPreload())
+            MainController.getControllerInstance().reloadModels();
     }
 }

@@ -2,21 +2,17 @@ package gui.tabPanels;
 
 import core.Database;
 import core.binders.DiseaseModelBinder;
-import core.binders.VaccineModelBinder;
 import core.repositories.ModelRepository;
 import entities.Disease;
-import entities.Vaccine;
 import gui.DiseaseModel;
 import gui.MainController;
 import gui.MainModel;
 import gui.dialogBoxes.AddDiseaseDialog;
-import gui.dialogBoxes.AddVaccineDialog;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  * Created by Kamil on 09.01.2017.
@@ -55,7 +51,7 @@ public class DiseaseController extends TabController
                 return;
             Disease disease = new Disease();
             disease.setName(addDiseaseDialog.getName());
-            disease.setLethality(String.valueOf(addDiseaseDialog.isLethalitySelected()));
+            disease.setLethality(addDiseaseDialog.getLethalitySelected());
             disease.setSymptoms(addDiseaseDialog.getSymptoms());
             disease.setDescription(addDiseaseDialog.getDescription());
             new ModelRepository<>(database, new DiseaseModelBinder()).add(disease);
@@ -64,7 +60,8 @@ public class DiseaseController extends TabController
             view.displayError("Database error occurred.");
             e.printStackTrace();
         }
-        MainController.getControllerInstance().reloadModels();
+        if (MainController.getControllerInstance().isAutoPreload())
+            MainController.getControllerInstance().reloadModels();
     }
 
     public class onMouseDoubleClick extends MouseAdapter

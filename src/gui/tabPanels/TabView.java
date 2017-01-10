@@ -1,13 +1,17 @@
 package gui.tabPanels;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.StringStack;
+import gui.MainController;
 import gui.MainModel;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.IntStream;
 
@@ -17,14 +21,12 @@ import java.util.stream.IntStream;
 public class TabView {
     protected TabController controller;
 
-    final boolean preloadDatabase = false;
-
     protected JPanel mainPanel;
     protected JTextField filterText;
     protected JTable table;
     protected TableRowSorter<TableModel> sorter;
     protected JPanel leftMenu;
-
+    protected JComboBox tableColumns;
 
     public TabView(TabController controller, MainModel mainModel)
     {
@@ -61,6 +63,15 @@ public class TabView {
         );
         filterPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, filterText.getPreferredSize().height));
         filterPanel.add(new JLabel("Filter: "), BorderLayout.WEST);
+
+        // combo box for column-based filtering
+        tableColumns = new JComboBox<>(new String[] {"Any"});
+        tableColumns.addItemListener(e -> filterTableCells());
+        DefaultTableModel tableModel = controller.getModel().getTableModel();
+        for (int i = 0; i < tableModel.getColumnCount(); ++i)
+            tableColumns.addItem(tableModel.getColumnName(i));
+        filterPanel.add(tableColumns, BorderLayout.EAST);
+
         filterPanel.add(filterText);
         dataPanel.add(filterPanel, BorderLayout.NORTH);
 
@@ -97,13 +108,16 @@ public class TabView {
     }
 
     protected void filterTableCells() {
-        // TODO: gui option for database preload?
-        if (preloadDatabase)
+        if (MainController.getControllerInstance().isPreloadDatabase())
         {
             RowFilter<TableModel, Object> rf = null;
             try
             {
-                rf = RowFilter.regexFilter('^' + filterText.getText(), IntStream.rangeClosed(0, table.getColumnCount() - 1).toArray());
+                String selectedItem = (String) tableColumns.getSelectedItem();
+                if (Objects.equals(selectedItem, "Any"))
+                    rf = RowFilter.regexFilter('^' + filterText.getText(), IntStream.rangeClosed(0, table.getColumnCount() - 1).toArray());
+                else
+                    rf = RowFilter.regexFilter('^' + filterText.getText(), table.getColumn(selectedItem).getModelIndex());
             } catch (PatternSyntaxException e)
             {
                 return;
