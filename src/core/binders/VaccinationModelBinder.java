@@ -23,9 +23,17 @@ public class VaccinationModelBinder implements ModelBinder<Vaccination>
         columnsToFieldsMappings.put("SzczepionkaId", "vaccineId");
     }
 
+    private final Map<String, String> appColumnsToDatabaseColumnsMappings = new HashMap<>();
+    {
+        appColumnsToDatabaseColumnsMappings.put("Id", "Id");
+        appColumnsToDatabaseColumnsMappings.put("Vaccination date", "DataSzczepienia");
+        appColumnsToDatabaseColumnsMappings.put("Dog id", "PiesId");
+        appColumnsToDatabaseColumnsMappings.put("Vaccine id", "SzczepionkaId");
+    }
+
     public VaccinationModelBinder()
     {
-        modelBinderBase = new ModelBinderBase<>(columnsToFieldsMappings, () -> new Vaccination());
+        modelBinderBase = new ModelBinderBase<>(columnsToFieldsMappings, appColumnsToDatabaseColumnsMappings, () -> new Vaccination());
     }
 
     @Override
@@ -49,6 +57,12 @@ public class VaccinationModelBinder implements ModelBinder<Vaccination>
     public ArrayList<String> getColumnNames()
     {
         return modelBinderBase.getColumnNames();
+    }
+
+    @Override
+    public String getDatabaseColumnNameFor(String appColumnName)
+    {
+        return modelBinderBase.getDatabaseColumnNameFor(appColumnName);
     }
 
     @Override

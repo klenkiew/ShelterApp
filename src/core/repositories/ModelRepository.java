@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by mkk-13 on 08/01/2017.
@@ -63,6 +64,53 @@ public class ModelRepository<ModelType> {
         return objectList;
     }
 
+    public ArrayList<ModelType> getByColumnText(String text, String columnName) throws SQLException, NoSuchFieldException, IllegalAccessException
+    {
+        String query = "SELECT * FROM " + binder.getTableName() + " WHERE ";
+        String databaseColumn = binder.getDatabaseColumnNameFor(columnName);
+        query += databaseColumn + " LIKE \'" + text + "%\'";
+        ArrayList<HashMap<String, Object>> result = database.query(query, new ArrayList<>());
+        ArrayList<ModelType> objectList = new ArrayList<>();
+        for (HashMap<String, Object> row : result) {
+            ModelType object = binder.bindModel(row);
+            objectList.add(object);
+        }
+        return objectList;
+    }
+
+    // map: column name - value
+    public ArrayList<ModelType> getByComplexColumnText(Map<String, String> like, Map<String, String> equal) throws SQLException, NoSuchFieldException, IllegalAccessException
+    {
+        String query = "SELECT * FROM " + binder.getTableName() + " WHERE ";
+        int i = 0;
+        for (Map.Entry entry : like.entrySet())
+        {
+            String databaseColumn = binder.getDatabaseColumnNameFor((String) entry.getKey());
+            if (databaseColumn == null)
+                continue;
+            query += databaseColumn + " LIKE \'" + entry.getValue() + "%\' ";
+            if (++i < like.entrySet().size())
+                query += " OR ";
+            else
+                if (!equal.isEmpty())
+                    query += " AND ";
+        }
+        i = 0;
+        for (Map.Entry entry : equal.entrySet())
+        {
+            String databaseColumn = binder.getDatabaseColumnNameFor((String) entry.getKey());
+            query += databaseColumn + " = \'" + entry.getValue() + "\' ";
+            if (++i < like.entrySet().size())
+            query += " OR ";
+        }
+        ArrayList<HashMap<String, Object>> result = database.query(query, new ArrayList<>());
+        ArrayList<ModelType> objectList = new ArrayList<>();
+        for (HashMap<String, Object> row : result) {
+            ModelType object = binder.bindModel(row);
+            objectList.add(object);
+        }
+        return objectList;
+    }
 
     public void add(ModelType object) throws SQLException
     {

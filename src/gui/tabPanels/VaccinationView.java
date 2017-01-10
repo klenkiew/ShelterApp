@@ -5,6 +5,7 @@ import core.binders.DogModelBinder;
 import core.binders.VaccineModelBinder;
 import core.repositories.ModelRepository;
 import entities.*;
+import gui.MainController;
 import gui.MainModel;
 
 import javax.swing.*;
@@ -12,6 +13,7 @@ import javax.swing.table.TableModel;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.IntStream;
 
@@ -110,23 +112,44 @@ public class VaccinationView extends TabView
     @Override
     protected void filterTableCells() {
         ArrayList<RowFilter<TableModel, Object>> filters = new ArrayList<>();
-        RowFilter<TableModel, Object> rf = null;
-        // TODO: add filtering by disease in combo box
-        // but it requires query to database because we only have vaccine id in table
-        // not disease id
-        try {
-            filters.add(RowFilter.regexFilter('^' + filterText.getText(), IntStream.rangeClosed(0, table.getColumnCount()-1).toArray()));
+        String selectedItem = (String) tableColumns.getSelectedItem();
+        if (MainController.getControllerInstance().isPreloadDatabase())
+        {
+            RowFilter<TableModel, Object> rf = null;
+
+            // TODO: add filtering by disease in combo box
+            // but it requires query to database because we only have vaccine id in table
+            // not disease id
+            try
+            {
+                if (Objects.equals(selectedItem, "Any"))
+                    filters.add(RowFilter.regexFilter('^' + filterText.getText(), IntStream.rangeClosed(0, table.getColumnCount() - 1).toArray()));
+                else
+                    filters.add(RowFilter.regexFilter('^' + filterText.getText(), table.getColumn(selectedItem).getModelIndex()));
+                if (dogComboBox.isEnabled())
+                {
+                    Dog selectedDog = (Dog) dogComboBox.getSelectedItem();
+                    String regex = "^" + String.valueOf(selectedDog.getId()) + "$";
+                    filters.add(RowFilter.regexFilter(regex, 2));
+                }
+            } catch (PatternSyntaxException e)
+            {
+                return;
+            }
+            rf = RowFilter.andFilter(filters);
+            sorter.setRowFilter(rf);
+        }
+        else
             if (dogComboBox.isEnabled())
             {
                 Dog selectedDog = (Dog) dogComboBox.getSelectedItem();
-                String regex = "^" + String.valueOf(selectedDog.getId()) + "$";
-                filters.add(RowFilter.regexFilter(regex, 2));
+                controller.filterData(filterText.getText(), selectedItem, String.valueOf(selectedDog.getId()));
             }
-        } catch (PatternSyntaxException e) {
-            return;
-        }
-        rf = RowFilter.andFilter(filters);
-        sorter.setRowFilter(rf);
+            else
+                if (Objects.equals(selectedItem, "Any"))
+                    controller.filterData(filterText.getText());
+                else
+                    controller.filterData(filterText.getText(), selectedItem);
     }
 
     private void onDogCheckboxChange()

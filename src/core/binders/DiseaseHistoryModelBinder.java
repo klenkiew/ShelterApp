@@ -25,9 +25,19 @@ public class DiseaseHistoryModelBinder implements ModelBinder<DiseaseHistoryReco
         columnsToFieldsMappings.put("CzySmiertelna", "isFatal");
     }
 
+    private final Map<String, String> appColumnsToDatabaseColumnsMappings = new HashMap<>();
+    {
+        appColumnsToDatabaseColumnsMappings.put("Id", "Id");
+        appColumnsToDatabaseColumnsMappings.put("Sickness Start", "DataZachorowania");
+        appColumnsToDatabaseColumnsMappings.put("Sickness End", "DataWyzdrowienia");
+        appColumnsToDatabaseColumnsMappings.put("Dog Id", "PiesId");
+        appColumnsToDatabaseColumnsMappings.put("Disease Id", "ChorobaId");
+        appColumnsToDatabaseColumnsMappings.put("Fatal", "CzySmiertelna");
+    }
+
     public DiseaseHistoryModelBinder()
     {
-        modelBinderBase = new ModelBinderBase<>(columnsToFieldsMappings, () -> new DiseaseHistoryRecord());
+        modelBinderBase = new ModelBinderBase<>(columnsToFieldsMappings, appColumnsToDatabaseColumnsMappings, () -> new DiseaseHistoryRecord());
     }
 
     @Override
@@ -52,6 +62,12 @@ public class DiseaseHistoryModelBinder implements ModelBinder<DiseaseHistoryReco
     public ArrayList<String> getColumnNames()
     {
         return modelBinderBase.getColumnNames();
+    }
+
+    @Override
+    public String getDatabaseColumnNameFor(String appColumnName)
+    {
+        return modelBinderBase.getDatabaseColumnNameFor(appColumnName);
     }
 
     @Override

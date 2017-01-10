@@ -29,9 +29,21 @@ public class DogModelBinder implements ModelBinder<Dog>
         columnsToFieldsMappings.put("KojecId", "coopId");
     }
 
+    private final Map<String, String> appColumnsToDatabaseColumnsMappings = new HashMap<>();
+    {
+        appColumnsToDatabaseColumnsMappings.put("Id", "Id");
+        appColumnsToDatabaseColumnsMappings.put("Name", "Imie");
+        appColumnsToDatabaseColumnsMappings.put("Age", "Wiek");
+        appColumnsToDatabaseColumnsMappings.put("A", "CzyAgresywny");
+        appColumnsToDatabaseColumnsMappings.put("O", "CzyOtwarty");
+        appColumnsToDatabaseColumnsMappings.put("V", "CzyChorowity");
+//        appColumnsToDatabaseColumnsMappings.put("KolorSiersci", "Hair Color");
+    }
+
+
     public DogModelBinder()
     {
-        modelBinderBase = new ModelBinderBase<>(columnsToFieldsMappings, () -> new Dog());
+        modelBinderBase = new ModelBinderBase<>(columnsToFieldsMappings, appColumnsToDatabaseColumnsMappings, () -> new Dog());
     }
 
     @Override
@@ -61,6 +73,12 @@ public class DogModelBinder implements ModelBinder<Dog>
     public ArrayList<String> getColumnNames()
     {
         return modelBinderBase.getColumnNames();
+    }
+
+    @Override
+    public String getDatabaseColumnNameFor(String appColumnName)
+    {
+        return modelBinderBase.getDatabaseColumnNameFor(appColumnName);
     }
 
     @Override

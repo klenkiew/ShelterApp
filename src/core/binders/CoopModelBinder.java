@@ -24,9 +24,11 @@ public class CoopModelBinder implements ModelBinder<Coop>
         columnsToFieldsMappings.put("PomieszczenieId", "roomId");
     }
 
+    private final Map<String, String> appColumnsToDatabaseColumnsMappings = new HashMap<>();
+
     public CoopModelBinder()
     {
-        modelBinderBase = new ModelBinderBase<>(columnsToFieldsMappings, () -> new Coop());
+        modelBinderBase = new ModelBinderBase<>(columnsToFieldsMappings, appColumnsToDatabaseColumnsMappings, () -> new Coop());
     }
 
     @Override
@@ -51,6 +53,12 @@ public class CoopModelBinder implements ModelBinder<Coop>
     public ArrayList<String> getColumnNames()
     {
         return modelBinderBase.getColumnNames();
+    }
+
+    @Override
+    public String getDatabaseColumnNameFor(String appColumnName)
+    {
+        return modelBinderBase.getDatabaseColumnNameFor(appColumnName);
     }
 
     @Override

@@ -22,7 +22,7 @@ public class CitiesRepository
         database = new Database();
         HashMap<String, String> columnsToFieldsMappings = new HashMap<>();
         columnsToFieldsMappings.put("Population", "Population");
-        binder = new ModelBinderBase<>(columnsToFieldsMappings, () -> new City());
+//        binder = new ModelBinderBase<>(columnsToFieldsMappings, appColumnsToDatabseColumnsMappings, () -> new City());
     }
 
     public ArrayList<City> getAll() throws NoSuchFieldException, IllegalAccessException, SQLException

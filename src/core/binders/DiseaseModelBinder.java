@@ -26,9 +26,18 @@ public class DiseaseModelBinder implements ModelBinder<Disease>
         columnsToFieldsMappings.put("LiczbaZgonow", "deathCount");
     }
 
+    private final Map<String, String> appColumnsToDatabaseColumnsMappings = new HashMap<>();
+    {
+        appColumnsToDatabaseColumnsMappings.put("Id", "Id");
+        appColumnsToDatabaseColumnsMappings.put("Name", "Nazwa");
+        appColumnsToDatabaseColumnsMappings.put("Lethality", "Smiertelnosc");
+        appColumnsToDatabaseColumnsMappings.put("Number of cases", "LiczbaZachorowan");
+        appColumnsToDatabaseColumnsMappings.put("Number of deaths", "LiczbaZgonow");
+    }
+
     public DiseaseModelBinder()
     {
-        modelBinderBase = new ModelBinderBase<>(columnsToFieldsMappings, () -> new Disease());
+        modelBinderBase = new ModelBinderBase<>(columnsToFieldsMappings, appColumnsToDatabaseColumnsMappings, () -> new Disease());
     }
 
     @Override
@@ -54,6 +63,12 @@ public class DiseaseModelBinder implements ModelBinder<Disease>
     public ArrayList<String> getColumnNames()
     {
         return modelBinderBase.getColumnNames();
+    }
+
+    @Override
+    public String getDatabaseColumnNameFor(String appColumnName)
+    {
+        return modelBinderBase.getDatabaseColumnNameFor(appColumnName);
     }
 
     @Override

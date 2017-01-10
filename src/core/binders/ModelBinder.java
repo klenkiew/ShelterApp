@@ -15,5 +15,7 @@ public interface ModelBinder<ModelType>
 
     ArrayList<String> getColumnNames();
 
+    String getDatabaseColumnNameFor(String appColumnName);
+
     ModelType bindModel(HashMap<String, Object> data) throws NoSuchFieldException, IllegalAccessException;
 }

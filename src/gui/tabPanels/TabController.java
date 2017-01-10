@@ -54,6 +54,19 @@ public class TabController {
         }
     }
 
+    public void filterData(String text, String selectedColumn)
+    {
+        try
+        {
+            model.loadFilteredData(text, selectedColumn);
+        } catch (NoSuchFieldException | IllegalAccessException | SQLException e)
+        {
+            String errorMessage = "Unable to get data from database.";
+            view.displayError(errorMessage);
+            e.printStackTrace();
+        }
+    }
+
     private void initialize()
     {
         try
@@ -67,6 +80,19 @@ public class TabController {
             view.displayError(errorMessage);
             e.printStackTrace();
         } catch (SQLException e)
+        {
+            String errorMessage = "Unable to get data from database.";
+            view.displayError(errorMessage);
+            e.printStackTrace();
+        }
+    }
+
+    public void filterData(String text, String selectedItem, String dogComboBoxSelectedItem)
+    {
+        try
+        {
+            model.loadFilteredData(text, selectedItem, dogComboBoxSelectedItem);
+        } catch (NoSuchFieldException | IllegalAccessException | SQLException e)
         {
             String errorMessage = "Unable to get data from database.";
             view.displayError(errorMessage);

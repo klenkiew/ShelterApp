@@ -11,11 +11,13 @@ import java.util.*;
 public class ModelBinderBase<ModelType> implements ModelBinder<ModelType>
 {
     private final Map<String, String> columnsToFieldsMappings;
+    private final Map<String, String> appColumnsToDatabseColumnsMappings;
     private Factory<ModelType> factory;
 
-    public ModelBinderBase(Map<String, String> columnsToFieldsMappings, Factory<ModelType> factory)
+    public ModelBinderBase(Map<String, String> columnsToFieldsMappings, Map<String, String> appColumnsToDatabseColumnsMappings, Factory<ModelType> factory)
     {
         this.columnsToFieldsMappings = columnsToFieldsMappings;
+        this.appColumnsToDatabseColumnsMappings = appColumnsToDatabseColumnsMappings;
         this.factory = factory;
     }
 
@@ -38,6 +40,12 @@ public class ModelBinderBase<ModelType> implements ModelBinder<ModelType>
         for (Map.Entry<String, String> entry : columnsToFieldsMappings.entrySet())
             names.add(entry.getKey());
         return names;
+    }
+
+    @Override
+    public String getDatabaseColumnNameFor(String appColumnName)
+    {
+        return appColumnsToDatabseColumnsMappings.get(appColumnName);
     }
 
     @Override

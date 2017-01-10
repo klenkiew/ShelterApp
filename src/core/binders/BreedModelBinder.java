@@ -23,9 +23,11 @@ public class BreedModelBinder implements ModelBinder<Breed>
         columnsToFieldsMappings.put("Wielkosc", "size");
     }
 
+    private final Map<String, String> appColumnsToDatabaseColumnsMappings = new HashMap<>();
+
     public BreedModelBinder()
     {
-        modelBinderBase = new ModelBinderBase<>(columnsToFieldsMappings, () -> new Breed());
+        modelBinderBase = new ModelBinderBase<>(columnsToFieldsMappings, appColumnsToDatabaseColumnsMappings, () -> new Breed());
     }
 
     @Override
@@ -50,6 +52,12 @@ public class BreedModelBinder implements ModelBinder<Breed>
     public ArrayList<String> getColumnNames()
     {
         return modelBinderBase.getColumnNames();
+    }
+
+    @Override
+    public String getDatabaseColumnNameFor(String appColumnName)
+    {
+        return modelBinderBase.getDatabaseColumnNameFor(appColumnName);
     }
 
     @Override

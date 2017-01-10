@@ -108,12 +108,12 @@ public class TabView {
     }
 
     protected void filterTableCells() {
+        String selectedItem = (String) tableColumns.getSelectedItem();
         if (MainController.getControllerInstance().isPreloadDatabase())
         {
             RowFilter<TableModel, Object> rf = null;
             try
             {
-                String selectedItem = (String) tableColumns.getSelectedItem();
                 if (Objects.equals(selectedItem, "Any"))
                     rf = RowFilter.regexFilter('^' + filterText.getText(), IntStream.rangeClosed(0, table.getColumnCount() - 1).toArray());
                 else
@@ -125,7 +125,12 @@ public class TabView {
             sorter.setRowFilter(rf);
         }
         else
-            controller.filterData(filterText.getText());
+        {
+            if (Objects.equals(selectedItem, "Any"))
+                controller.filterData(filterText.getText());
+            else
+                controller.filterData(filterText.getText(), selectedItem);
+        }
     }
 
     public void displayError(String errorMessage)
