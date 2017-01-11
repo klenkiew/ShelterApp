@@ -72,6 +72,10 @@ public class MainController
         tabs.add(tempCtrl);
         tabList.add(new Pair<>("Vaccines", tempCtrl.getView().getMainPanel()));
 
+        // Disease statistic tab
+        DiseaseStatisticsController statisticsController = new DiseaseStatisticsController(database);
+        tabList.add(new Pair<>("Disease statistics", statisticsController.getView().getMainPanel()));
+
         return tabList;
     }
 
