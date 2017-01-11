@@ -91,9 +91,9 @@ public class VaccinationView extends TabView
 
         pane = new JPanel();
         pane.setLayout(new BorderLayout());
-        buttonList.add(new JLabel("Choose disease:"));
-        pane.add(diseaseCheckBox, BorderLayout.WEST);
-        pane.add(diseaseComboBox);
+//        buttonList.add(new JLabel("Choose disease:"));
+//        pane.add(diseaseCheckBox, BorderLayout.WEST);
+//        pane.add(diseaseComboBox);
         buttonList.add(pane);
         return buttonList;
     }
@@ -116,10 +116,6 @@ public class VaccinationView extends TabView
         if (MainController.getControllerInstance().isPreloadDatabase())
         {
             RowFilter<TableModel, Object> rf = null;
-
-            // TODO: add filtering by disease in combo box
-            // but it requires query to database because we only have vaccine id in table
-            // not disease id
             try
             {
                 if (Objects.equals(selectedItem, "Any"))
@@ -143,6 +139,8 @@ public class VaccinationView extends TabView
             if (dogComboBox.isEnabled())
             {
                 Dog selectedDog = (Dog) dogComboBox.getSelectedItem();
+                if (selectedDog == null)
+                    return;
                 controller.filterData(filterText.getText(), selectedItem, String.valueOf(selectedDog.getId()));
             }
             else
@@ -158,7 +156,8 @@ public class VaccinationView extends TabView
             dogComboBox.setEnabled(true);
         else
             dogComboBox.setEnabled(false);
-        filterTableCells();
+        if (MainController.getControllerInstance().isPreloadDatabase())
+            filterTableCells();
     }
 
     private void onDiseaseCheckboxChange()
@@ -167,7 +166,8 @@ public class VaccinationView extends TabView
             diseaseComboBox.setEnabled(true);
         else
             diseaseComboBox.setEnabled(false);
-        filterTableCells();
+        if (MainController.getControllerInstance().isPreloadDatabase())
+            filterTableCells();
     }
 
     public void displayDialogFor(Vaccination vaccination)

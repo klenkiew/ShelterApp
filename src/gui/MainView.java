@@ -1,5 +1,6 @@
 package gui;
 
+import gui.tabPanels.TabController;
 import javafx.util.Pair;
 import javax.swing.*;
 import java.awt.*;
@@ -74,6 +75,8 @@ public class MainView
                 mainController.reloadModels();
             forceReloadItem.setEnabled(preloadItemSelected);
             autoPreloadItem.setEnabled(preloadItemSelected);
+            for (TabController tab : mainController.getTabs())
+                tab.setSearchButtonEnabled(!preloadItemSelected);
         });
         forceReloadItem.addActionListener(e -> mainController.reloadModels());
         autoPreloadItem.addActionListener(e -> mainController.setAutoPreload(autoPreloadItem.isSelected()));

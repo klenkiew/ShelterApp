@@ -6,7 +6,6 @@ import javafx.util.Pair;
 
 import java.awt.*;
 import java.io.IOException;
-import java.security.interfaces.RSAMultiPrimePrivateCrtKey;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -134,5 +133,10 @@ public class MainController
     public void setPreloadDatabase(boolean preloadDatabase)
     {
         this.preloadDatabase = preloadDatabase;
+    }
+
+    public ArrayList<TabController> getTabs()
+    {
+        return tabs;
     }
 }

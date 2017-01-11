@@ -69,22 +69,22 @@ public class TabController {
 
     private void initialize()
     {
-        try
-        {
+//        try
+//        {
             model = getNewModel();
             view = getNewView(this, model);
-            model.loadData();
-        } catch (NoSuchFieldException | IllegalAccessException e)
-        {
-            String errorMessage = "Model binding error occurred.";
-            view.displayError(errorMessage);
-            e.printStackTrace();
-        } catch (SQLException e)
-        {
-            String errorMessage = "Unable to get data from database.";
-            view.displayError(errorMessage);
-            e.printStackTrace();
-        }
+//            model.loadData();
+//        } catch (NoSuchFieldException | IllegalAccessException e)
+//        {
+//            String errorMessage = "Model binding error occurred.";
+//            view.displayError(errorMessage);
+//            e.printStackTrace();
+//        } catch (SQLException e)
+//        {
+//            String errorMessage = "Unable to get data from database.";
+//            view.displayError(errorMessage);
+//            e.printStackTrace();
+//        }
     }
 
     public void filterData(String text, String selectedItem, String dogComboBoxSelectedItem)
@@ -98,5 +98,10 @@ public class TabController {
             view.displayError(errorMessage);
             e.printStackTrace();
         }
+    }
+
+    public void setSearchButtonEnabled(boolean b)
+    {
+        view.setSearchButtonEnabled(b);
     }
 }

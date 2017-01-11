@@ -27,6 +27,7 @@ public class TabView {
     protected TableRowSorter<TableModel> sorter;
     protected JPanel leftMenu;
     protected JComboBox tableColumns;
+    protected JButton searchButton;
 
     public TabView(TabController controller, MainModel mainModel)
     {
@@ -51,26 +52,44 @@ public class TabView {
         filterText.getDocument().addDocumentListener(
                 new DocumentListener() {
                     public void changedUpdate(DocumentEvent e) {
-                        filterTableCells();
+                        if (MainController.getControllerInstance().isPreloadDatabase())
+                            filterTableCells();
                     }
                     public void insertUpdate(DocumentEvent e) {
-                        filterTableCells();
+                        if (MainController.getControllerInstance().isPreloadDatabase())
+                            filterTableCells();
                     }
                     public void removeUpdate(DocumentEvent e) {
-                        filterTableCells();
+                        if (MainController.getControllerInstance().isPreloadDatabase())
+                            filterTableCells();
                     }
                 }
         );
+//        filterText.setMaximumSize(new Dimension(Integer.MAX_VALUE, filterText.getPreferredSize().height));
         filterPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, filterText.getPreferredSize().height));
         filterPanel.add(new JLabel("Filter: "), BorderLayout.WEST);
 
         // combo box for column-based filtering
         tableColumns = new JComboBox<>(new String[] {"Any"});
-        tableColumns.addItemListener(e -> filterTableCells());
+        tableColumns.addItemListener( e ->
+        {
+            if (MainController.getControllerInstance().isPreloadDatabase())
+                filterTableCells();
+        });
         DefaultTableModel tableModel = controller.getModel().getTableModel();
         for (int i = 0; i < tableModel.getColumnCount(); ++i)
             tableColumns.addItem(tableModel.getColumnName(i));
-        filterPanel.add(tableColumns, BorderLayout.EAST);
+
+        // button for executing query to database
+        searchButton = new JButton("Search");
+        searchButton.addActionListener(e -> filterTableCells());
+
+        JPanel buttonComboBoxPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        buttonComboBoxPanel.add(tableColumns);
+        buttonComboBoxPanel.add(searchButton);
+
+//        filterPanel.add(tableColumns, BorderLayout.EAST);
+        filterPanel.add(buttonComboBoxPanel, BorderLayout.EAST);
 
         filterPanel.add(filterText);
         dataPanel.add(filterPanel, BorderLayout.NORTH);
@@ -105,6 +124,12 @@ public class TabView {
 
     protected void setUpActionListeners()
     {
+//        searchButton.addActionListener(e -> filterTableCells());
+//        tableColumns.addItemListener( e ->
+//        {
+//            if (MainController.getControllerInstance().isPreloadDatabase())
+//                filterTableCells();
+//        });
     }
 
     protected void filterTableCells() {
@@ -151,5 +176,10 @@ public class TabView {
     public JPanel getMainPanel()
     {
         return mainPanel;
+    }
+
+    public void setSearchButtonEnabled(boolean b)
+    {
+        searchButton.setEnabled(b);
     }
 }
