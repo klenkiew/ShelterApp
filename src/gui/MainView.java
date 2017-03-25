@@ -19,6 +19,7 @@ public class MainView
     private JMenuItem forceReloadItem;
     private JCheckBoxMenuItem preloadItem;
     private JCheckBoxMenuItem autoPreloadItem;
+    private JMenuItem reconntectItem;
 
 
     public MainView(MainController controller, ArrayList<Pair<String, Component>> tabs)
@@ -45,9 +46,12 @@ public class MainView
         exitItem = new JMenuItem("Exit");
         forceReloadItem = new JMenuItem("Reload database");
         forceReloadItem.setEnabled(false);
+        reconntectItem = new JMenuItem("Reconnect");
         preloadItem = new JCheckBoxMenuItem("Database preload");
         autoPreloadItem = new JCheckBoxMenuItem("Auto-reload on change");
         autoPreloadItem.setEnabled(false);
+        menu.add(reconntectItem);
+        menu.addSeparator();
         menu.add(preloadItem);
         menu.add(forceReloadItem);
         menu.add(autoPreloadItem);
@@ -80,6 +84,7 @@ public class MainView
         });
         forceReloadItem.addActionListener(e -> mainController.reloadModels());
         autoPreloadItem.addActionListener(e -> mainController.setAutoPreload(autoPreloadItem.isSelected()));
+        reconntectItem.addActionListener(e -> mainController.reconnect());
     }
 
     public void setVisible(boolean value)

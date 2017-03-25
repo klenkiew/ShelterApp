@@ -4,6 +4,7 @@ import core.*;
 import gui.tabPanels.*;
 import javafx.util.Pair;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -35,8 +36,8 @@ public class MainController
     private MainController(Database database)
     {
         this.database = database;
-        initializeDatabase();
-        this.view = new MainView(this, initializeTabs());
+        ArrayList<Pair<String, Component>> tabs = initializeTabs();
+        this.view = new MainView(this, tabs);
     }
 
     private ArrayList<Pair<String, Component>> initializeTabs()
@@ -81,6 +82,7 @@ public class MainController
 
     public void run() {
         view.setVisible(true);
+        SwingUtilities.invokeLater(() -> initializeDatabase());
     }
 
     private void initializeDatabase()
@@ -142,5 +144,10 @@ public class MainController
     public ArrayList<TabController> getTabs()
     {
         return tabs;
+    }
+
+    public void reconnect()
+    {
+        initializeDatabase();
     }
 }

@@ -24,8 +24,6 @@ public class VaccinationView extends TabView
 {
     private JComboBox dogComboBox;
     private JCheckBox dogCheckBox;
-    private JComboBox diseaseComboBox;
-    private JCheckBox diseaseCheckBox;
 
     public VaccinationView(TabController controller, MainModel mainModel)
     {
@@ -36,24 +34,9 @@ public class VaccinationView extends TabView
     protected ArrayList<Component> getAllButtons()
     {
         ArrayList<Component> buttonList = new ArrayList<>();
-        ModelRepository<Dog> dogRepository = new ModelRepository<>(controller.database, new DogModelBinder());
-        ModelRepository<Disease> diseaseRepository = new ModelRepository<>(controller.database, new DiseaseModelBinder());
 
-        ArrayList<Dog> dogs = new ArrayList<>();
-        ArrayList<Disease> diseases = new ArrayList<>();
-        try
-        {
-            dogs = dogRepository.getAll();
-            diseases = diseaseRepository.getAll();
-        } catch (NoSuchFieldException | IllegalAccessException | SQLException e)
-        {
-            displayError("Whatever.");
-            e.printStackTrace();
-        }
-        dogComboBox = new JComboBox(dogs.toArray(new Dog[dogs.size()]));
+        dogComboBox = new JComboBox();
         dogComboBox.setEnabled(false);
-        diseaseComboBox = new JComboBox(diseases.toArray(new Disease[diseases.size()]));
-        diseaseComboBox.setEnabled(false); // TODO: remove when implemented properly
         dogComboBox.setRenderer(new DefaultListCellRenderer()
         {
             @Override
@@ -66,23 +49,9 @@ public class VaccinationView extends TabView
                 return this;
             }
         });
-        diseaseComboBox.setRenderer(new DefaultListCellRenderer()
-        {
-            @Override
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if(value instanceof Disease){
-                    Disease disease = (Disease) value;
-                    setText(String.valueOf(disease.getName()));
-                }
-                return this;
-            }
-        });
         JPanel pane = new JPanel();
         pane.setLayout(new BorderLayout());
         dogCheckBox = new JCheckBox();
-        diseaseCheckBox = new JCheckBox();
-        diseaseCheckBox.setEnabled(false); ///< TODO: enable when disease filtering is implemented
 
         buttonList.add(new JLabel("Choose dog:"));
         pane.add(dogCheckBox, BorderLayout.WEST);
@@ -91,9 +60,6 @@ public class VaccinationView extends TabView
 
         pane = new JPanel();
         pane.setLayout(new BorderLayout());
-//        buttonList.add(new JLabel("Choose disease:"));
-//        pane.add(diseaseCheckBox, BorderLayout.WEST);
-//        pane.add(diseaseComboBox);
         buttonList.add(pane);
         return buttonList;
     }
@@ -103,10 +69,8 @@ public class VaccinationView extends TabView
     {
         VaccinationController vaccinationController = (VaccinationController) controller;
         table.addMouseListener(vaccinationController.new onMouseDoubleClick());
-        diseaseComboBox.addItemListener(e -> filterTableCells());
         dogComboBox.addItemListener(e -> filterTableCells());
         dogCheckBox.addItemListener(e -> onDogCheckboxChange());
-        diseaseCheckBox.addItemListener(e -> onDiseaseCheckboxChange());
     }
 
     @Override
@@ -153,21 +117,31 @@ public class VaccinationView extends TabView
     private void onDogCheckboxChange()
     {
         if (dogCheckBox.isSelected())
+        {
+            loadDogsComboBoxData();
             dogComboBox.setEnabled(true);
+        }
         else
             dogComboBox.setEnabled(false);
         if (MainController.getControllerInstance().isPreloadDatabase())
             filterTableCells();
     }
 
-    private void onDiseaseCheckboxChange()
+    private void loadDogsComboBoxData()
     {
-        if (diseaseCheckBox.isSelected())
-            diseaseComboBox.setEnabled(true);
-        else
-            diseaseComboBox.setEnabled(false);
-        if (MainController.getControllerInstance().isPreloadDatabase())
-            filterTableCells();
+        ModelRepository<Dog> dogRepository = new ModelRepository<>(controller.database, new DogModelBinder());
+
+        ArrayList<Dog> dogs = new ArrayList<>();
+        try
+        {
+            dogs = dogRepository.getAll();
+        } catch (NoSuchFieldException | IllegalAccessException | SQLException e)
+        {
+            displayError("Whatever.");
+            e.printStackTrace();
+        }
+        for (Dog dog : dogs)
+            dogComboBox.addItem(dog);
     }
 
     public void displayDialogFor(Vaccination vaccination)

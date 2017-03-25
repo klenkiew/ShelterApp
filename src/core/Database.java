@@ -1,8 +1,12 @@
 package core;
 
-import java.lang.reflect.Field;
+import com.mysql.jdbc.JDBC4Connection;
+
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by Kamil on 27.12.2016.
@@ -33,6 +37,7 @@ public class Database implements AutoCloseable
 
     public ArrayList<HashMap<String, Object>> query(String query, List<Object> parameters) throws SQLException
     {
+        checkConnection();
         ResultSet resultSet = null;
         ArrayList<HashMap<String, Object>> result = null;
         try ( PreparedStatement preparedStatement = connection.prepareStatement(query) )
@@ -69,6 +74,7 @@ public class Database implements AutoCloseable
 
     public int update(String query, List<Object> parameters) throws SQLException
     {
+        checkConnection();
         int numberOfRowsUpdated = 0;
         boolean isAutoCommit = false;
         try ( PreparedStatement preparedStatement = connection.prepareStatement(query) )
@@ -93,6 +99,14 @@ public class Database implements AutoCloseable
             setAutoCommit(isAutoCommit);
         }
         return numberOfRowsUpdated;
+    }
+
+    private void checkConnection() throws SQLException
+    {
+        if (connection == null)
+        {
+            throw new SQLException("Connection to database isn't initalized.");
+        }
     }
 
     private void setAutoCommit(boolean value)
